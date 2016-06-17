@@ -6,7 +6,7 @@ import uk.gov.hmrc.versioning.SbtGitVersioning
 object StubServiceBuild extends Build with MicroService {
   import scala.util.Properties.envOrElse
 
-  val appName = "pla-dynamic-stub"
+  val appName = "investment-tax-relief-submission-dynamic-stub"
 
   override lazy val plugins: Seq[Plugins] = Seq(
     SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin
