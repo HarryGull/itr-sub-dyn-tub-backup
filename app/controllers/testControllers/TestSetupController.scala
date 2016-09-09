@@ -14,90 +14,42 @@
  * limitations under the License.
  */
 
-/****************************************************************************************************
-GH: This is for test only routes. Left as we may replicate this later to allow testing of endpoints
-
- */
-
 package controllers.testControllers
 
+import model.{Error, SubmissionRequest}
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.microservice.controller.BaseController
-//import uk.gov.hmrc.pla.stub.repository.{ProtectionRepository, MongoProtectionRepository}
-import model.SubmissionResponseTest
-import model.Error
+import play.api.mvc.{Action, BodyParsers, Results}
+import mongo.InvestmentTaxReliefSubmissionRepository
 
-import play.api.mvc._
-import play.api.libs.json._
-
-import scala.Error
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 object TestSetupController extends TestSetupController {
-     //override val protectionRepository = MongoProtectionRepository()
+  val investmentTaxReliefSubmissionRepository = InvestmentTaxReliefSubmissionRepository()
 }
 
 trait TestSetupController extends BaseController {
-    //val protectionRepository: ProtectionRepository
 
-/*
-  /**
-    * Stub-only convenience operation to add a protection to test data
-    * @return
-    */
-  def insertProtection() = Action.async (BodyParsers.parse.json) { implicit request =>
-    val protectionJs = request.body.validate[Protection]
-    protectionJs.fold(
-      errors => Future.successful(BadRequest(Json.toJson(Error(message="body failed validation with errors: " + errors)))),
-      protection =>
-        protectionRepository.insert(protection)
-          .map { _ => Ok }
-          .recover { case exception => Results.InternalServerError(exception.toString) }
+  val investmentTaxReliefSubmissionRepository : InvestmentTaxReliefSubmissionRepository
+
+  def insertSubmissionRecord() : Action[JsValue] = Action.async(BodyParsers.parse.json) { implicit request =>
+    val submissionRecordJs = request.body.validate[SubmissionRequest]
+    submissionRecordJs.fold(
+      errors => Future.successful(BadRequest(Json.toJson(Error(message = "" + errors)))),
+      submissionRequest =>
+        investmentTaxReliefSubmissionRepository.insert(submissionRequest).map {
+          _ => Ok
+        }
+          .recover {
+            case exception => Results.InternalServerError(exception.toString)
+          }
     )
   }
 
-  /**
-    * Stub-only convenience operation to tear down test data
-    * @return
-    */
-  def removeAllProtections() = Action.async { implicit request =>
-    protectionRepository.removeAllProtections()
-    Future.successful(Ok)
+  val wipeDataBase = Action.async(parse.anyContent) { implicit request =>
+    investmentTaxReliefSubmissionRepository.wipeTestData().map {
+      _ => Ok("Cleansed")
+    }
   }
-
-  /**
-    * Stub-only convenience operation to tear down test data for a given NINO
-    *
-    * @param nino
-    * @return
-    */
-  def removeProtections(nino: String) = Action.async { implicit request =>
-    protectionRepository.removeByNino(nino: String)
-    Future.successful(Ok)
-  }
-
-  /**
-    * Stub-only convenience operation to tear down test data for a specified protection
-    *
-    * @param nino
-    * @param protectionId
-    * @return
-    */
-  def removeProtection(nino: String, protectionId: Long) = Action.async { implicit request =>
-    protectionRepository.removeByNinoAndProtectionID(nino: String, protectionId)
-    Future.successful(Ok)
-  }
-
-  /**
-    * Stub-only convenience operation to tear down test data for a specified protection
-    *
-    * @return
-    */
-  def dropProtectionsCollection() = Action.async { implicit request =>
-    protectionRepository.removeProtectionsCollection()
-    Future.successful(Ok)
-  }
-
-  */
-
 }

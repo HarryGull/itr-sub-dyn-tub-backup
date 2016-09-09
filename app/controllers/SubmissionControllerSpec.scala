@@ -17,12 +17,18 @@
 package controllers
 
 import uk.gov.hmrc.play.microservice.controller.BaseController
-import play.api.libs.json._
 import model._
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsError, JsResult, JsValue, Json}
 import play.api.mvc._
+
 import scala.concurrent.Future
-import scala.util.Random
+import SubmissionResponse.formats
+import SubmissionRequest.format
+import mongo.InvestmentTaxReliefSubmissionRepository
+
+//THE BELOW ARE REQUIRED
+import ContactDetailsModel.format
+import YourCompanyNeedModel.format
 
 
 /**
@@ -30,21 +36,65 @@ import scala.util.Random
   *
   **/
 
-object SubmissionStubController extends SubmissionStubController {
+object SubmissionStubController extends SubmissionStubController{
+  val investmentTaxReliefSubmissionRepository = InvestmentTaxReliefSubmissionRepository()
 }
 
 trait SubmissionStubController extends BaseController {
 
-  /**
-    * Get all current protections applicable to the specified Nino
-    *
-    * @param nino identifies the individual to whom the protections apply
-    * @return List of latest versions of each protection
-    **/
+  val investmentTaxReliefSubmissionRepository : InvestmentTaxReliefSubmissionRepository
+
+
   def testResponse(nino: String): Action[AnyContent] = Action.async{ implicit request =>
     val result = SubmissionResponseTest(true, nino, "Service Response Success")
     Future.successful(Ok(Json.toJson(result)))
   }
+
+  //noinspection ScalaStyle
+  def submitAdvancedAssuranceApplication = Action.async (BodyParsers.parse.json) { implicit request =>
+
+    val submissionApplicationBodyJs = request.body.validate[SubmissionRequest]
+    //val headers = request.headers.toSimpleMap
+    //val submissionApplicationBodyJs = ControllerHelper.addExtraRequestHeaderChecks(headers, submissionApplicationBodyJs)
+
+    submissionApplicationBodyJs.fold(
+      errors => Future.successful(BadRequest(Json.toJson(Error(message="Request to submit application failed with validation errors: " + errors)))),
+      submitRequest => {
+
+        val emailLower = submitRequest.contactDetails.email.toLowerCase()
+        // Some simple faked responses based on the email input parameter
+        // This is a just a simple temporary approach until we have the proper submission/JSON and APIs
+        emailLower match {
+          case email if email.contains("badrequest") => {
+            Future.successful(BadRequest(Json.toJson(Error(message="Request to submit application failed with validation errors" ))))
+          }
+          case email if email.contains("forbiddenrequest") => {
+            Future.successful(Forbidden(Json.toJson(Error(message="Forbidden" ))))
+          }
+          case email if email.contains("internalservererrorrequest") => {
+            Future.successful(InternalServerError(Json.toJson(Error(message="Internal Server Error" ))))
+          }
+          case email if email.contains("serviceunavailablerequest") => {
+            Future.successful(ServiceUnavailable(Json.toJson(Error(message="Service Unavailable" ))))
+          }
+          case _ => {
+            Future.successful(Created(Json.toJson(SubmissionResponse(true, generateFormbundleId(),
+              "Submission Request Successful"))))
+          }
+        }
+      }
+    )
+
+
+  }
+
+  def generateFormbundleId(): String = {
+    val start = 10000000
+    val end =   99999999
+    // prepend a string value
+    s"FBUND${start + scala.util.Random.nextInt( (end - start) + 1 )}"
+  }
+
 }
 
 object ControllerHelper {

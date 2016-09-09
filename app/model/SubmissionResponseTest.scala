@@ -18,8 +18,12 @@ package model
 
 import play.api.libs.json.Json
 
-case class SubmissionResponse(status: Boolean, formBundleId: String, message: String)
+case class SubmissionResponseTest(status: Boolean, nino: String, message: String)
 
-object SubmissionResponse {
-  implicit val formats = Json.format[SubmissionResponse]
+object Implicits {
+  implicit val persistedSubmissionTestResponseFormat = Json.format[SubmissionResponseTest]
+}
+
+object SubmissionResponseTest {
+  implicit val formats = Json.format[SubmissionResponseTest]
 }
