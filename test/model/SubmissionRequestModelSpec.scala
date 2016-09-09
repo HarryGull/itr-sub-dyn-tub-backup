@@ -31,12 +31,23 @@ class SubmissionRequestModelSpec extends UnitSpec {
     val yd = YourCompanyNeedModel("AA")
     val sub = new SubmissionRequest(cd, yd)
 
-
     val json = Json.toJson(sub)
-    println(json)
-    println(testJson)
     json.toString() shouldBe testJson
+    println(json)
+  }
 
+
+  // form model to JSON - apply
+  "call apply successfully to create model from Json" in {
+    implicit val formats = Json.format[SubmissionResponse]
+
+    val request =  Json.parse(testJson.toString()).as[SubmissionRequest]
+
+    request.contactDetails.email  shouldBe "fred@fred.com"
+    request.contactDetails.telephoneNumber  shouldBe "01952 256555"
+    request.contactDetails.forename  shouldBe "gary"
+    request.contactDetails.surname  shouldBe "hull"
+    request.yourCompanyNeedModel.needAAorCS  shouldBe "AA"
   }
 }
 
