@@ -19,20 +19,11 @@ package controllers
 import fixtures.SubmissionFixture
 import model.SubmissionResponse
 import mongo.InvestmentTaxReliefSubmissionRepository
-import org.mockito.Matchers
 import uk.gov.hmrc.play.test.WithFakeApplication
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.UnitSpec
-import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
-import play.api.libs.iteratee.Iteratee
-import play.api.libs.json.{JsError, JsValue}
-import play.api.mvc.{AnyContentAsJson, Request, Result}
-
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{Await, Future}
-import scala.util.Success
 
 
 class SubmissionControllerSpec extends UnitSpec with WithFakeApplication with MockitoSugar with SubmissionFixture {
