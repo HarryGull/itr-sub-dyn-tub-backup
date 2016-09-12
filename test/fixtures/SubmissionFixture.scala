@@ -33,7 +33,7 @@ trait SubmissionFixture {
 
 
 
-  lazy val badRequestSubmission = validSubmissionData.copy(this.companyDetails.copy(email ="embadrequat@fred.com"))
+  lazy val badRequestSubmission = validSubmissionData.copy(this.companyDetails.copy(email ="embadrequest@fred.com"))
   lazy val internalServerErrorRequestSubmission = validSubmissionData.copy(this.companyDetails.copy(email ="eminternalservererrorrequest@fred.com"))
   lazy val serviceUnavilableErrorRequestSubmission = validSubmissionData.copy(this.companyDetails.copy(email ="embserviceunavailablerequest@fred.com"))
   lazy val forbiddenErrorRequestSubmission = validSubmissionData.copy(this.companyDetails.copy(email ="emforbiddenrequest@fred.com"))
