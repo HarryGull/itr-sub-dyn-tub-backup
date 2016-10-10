@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package model
+package models
 
 import play.api.libs.json.Json
 
-case class SubmissionResponse(status: Boolean, formBundleId: String, message: String)
+case class NatureOfBusinessModel(natureofbusiness : String)
 
-object SubmissionResponse {
-  implicit val formats = Json.format[SubmissionResponse]
+object NatureOfBusinessModel {
+  implicit val format = Json.format[NatureOfBusinessModel]
+  implicit val writes = Json.writes[NatureOfBusinessModel]
 }

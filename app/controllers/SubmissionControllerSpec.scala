@@ -17,13 +17,12 @@
 package controllers
 
 import uk.gov.hmrc.play.microservice.controller.BaseController
-import model._
+import models._
+import models.submission.{DesSubmitAdvancedAssuranceModel, SubmissionResponse}
 import play.api.libs.json.{JsError, JsResult, JsValue, Json}
 import play.api.mvc._
 
 import scala.concurrent.Future
-import SubmissionResponse.formats
-import SubmissionRequest.format
 import mongo.InvestmentTaxReliefSubmissionRepository
 
 //THE BELOW ARE REQUIRED
@@ -44,29 +43,26 @@ trait SubmissionStubController extends BaseController {
 
   val investmentTaxReliefSubmissionRepository : InvestmentTaxReliefSubmissionRepository
 
-
-  def testResponse(nino: String): Action[AnyContent] = Action.async{ implicit request =>
-    val result = SubmissionResponseTest(true, nino, "Service Response Success")
-    Future.successful(Ok(Json.toJson(result)))
-  }
-
   //noinspection ScalaStyle
-  def submitAdvancedAssuranceApplication = Action.async (BodyParsers.parse.json) { implicit request =>
+  def submitAdvancedAssuranceApplication(tavcReferenceId: String) = Action.async (BodyParsers.parse.json) { implicit request =>
 
-    val submissionApplicationBodyJs = request.body.validate[SubmissionRequest]
+    val submissionApplicationBodyJs = request.body.validate[DesSubmitAdvancedAssuranceModel]
     //val headers = request.headers.toSimpleMap
     //val submissionApplicationBodyJs = ControllerHelper.addExtraRequestHeaderChecks(headers, submissionApplicationBodyJs)
 
     submissionApplicationBodyJs.fold(
-      errors => Future.successful(BadRequest(Json.toJson(Error(message="Request to submit application failed with validation errors: " + errors)))),
+      errors => Future.successful(BadRequest(Json.toJson(Error(
+        message="Request to submit application failed with validation errors: " + errors)))),
       submitRequest => {
 
-        val emailLower = submitRequest.contactDetails.email.toLowerCase()
+        val emailLower =
+          submitRequest.submissionType.correspondenceDetails.contactDetails.emailAddress.getOrElse("").toLowerCase()
         // Some simple faked responses based on the email input parameter
         // This is a just a simple temporary approach until we have the proper submission/JSON and APIs
         emailLower match {
           case email if email.contains("badrequest") => {
-            Future.successful(BadRequest(Json.toJson(Error(message="Request to submit application failed with validation errors" ))))
+            Future.successful(BadRequest(Json.toJson(Error(
+              message="Request to submit application failed with validation errors" ))))
           }
           case email if email.contains("forbiddenrequest") => {
             Future.successful(Forbidden(Json.toJson(Error(message="Forbidden" ))))
@@ -78,14 +74,11 @@ trait SubmissionStubController extends BaseController {
             Future.successful(ServiceUnavailable(Json.toJson(Error(message="Service Unavailable" ))))
           }
           case _ => {
-            Future.successful(Created(Json.toJson(SubmissionResponse(true, generateFormbundleId(),
-              "Submission Request Successful"))))
+            Future.successful(Created(Json.toJson(SubmissionResponse("2014-12-17T09:30:47Z", generateFormbundleId()))))
           }
         }
       }
     )
-
-
   }
 
   def generateFormbundleId(): String = {
@@ -108,7 +101,8 @@ object ControllerHelper {
     val environment = headers.get("Environment")
     val token = headers.get("Authorization")
     val notSet = "<NOT SET>"
-    play.Logger.info("Request headers: environment =" + environment.getOrElse(notSet) + ", authorisation=" + token.getOrElse(notSet))
+    play.Logger.info("Request headers: environment =" + environment.getOrElse(notSet) + ", authorisation=" +
+      token.getOrElse(notSet))
 
     //  Ensure any header validation errors are accumulated with any body validation errors into a single JsError
     //  (the below code is not so nice, could be a good use case for scalaz validation)

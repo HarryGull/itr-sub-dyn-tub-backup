@@ -16,7 +16,7 @@
 
 package mongo
 
-import model.SubmissionRequest
+import models.submission.DesSubmitAdvancedAssuranceModel
 import play.modules.reactivemongo.MongoDbConnection
 import reactivemongo.api.DB
 import uk.gov.hmrc.mongo.{ReactiveRepository, Repository}
@@ -32,12 +32,12 @@ object InvestmentTaxReliefSubmissionRepository extends MongoDbConnection {
   def apply() : InvestmentTaxReliefSubmissionRepository = repository
 }
 
-trait InvestmentTaxReliefSubmissionRepository extends Repository[SubmissionRequest, BSONObjectID] {
+trait InvestmentTaxReliefSubmissionRepository extends Repository[DesSubmitAdvancedAssuranceModel, BSONObjectID] {
     def wipeTestData() : Future[Unit]
 }
 
 class MongoSubmissionRepository(implicit mongo: () => DB)
-  extends ReactiveRepository[SubmissionRequest, BSONObjectID]("submissions", mongo, SubmissionRequest.format)
+  extends ReactiveRepository[DesSubmitAdvancedAssuranceModel, BSONObjectID]("submissions", mongo, DesSubmitAdvancedAssuranceModel.DesfFullSubmitAAModelFormat)
     with InvestmentTaxReliefSubmissionRepository {
 
   override def wipeTestData(): Future[Unit] = {

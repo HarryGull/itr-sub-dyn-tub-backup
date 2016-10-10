@@ -14,28 +14,9 @@
  * limitations under the License.
  */
 
-package model
+package models
 
 import play.api.libs.json.Json
-
-case class SubmissionRequest (contactDetails: ContactDetailsModel,
-                              yourCompanyNeedModel: YourCompanyNeedModel)
-
-object SubmissionRequest {
-  implicit val format = Json.format[SubmissionRequest]
-  implicit val writes = Json.writes[SubmissionRequest]
-}
-
-case class ContactDetailsModel(forename : String,
-                               surname : String,
-                               telephoneNumber: String,
-                               email : String ) {
-}
-
-object ContactDetailsModel {
-  implicit val format = Json.format[ContactDetailsModel]
-  implicit val writes = Json.writes[ContactDetailsModel]
-}
 
 case class YourCompanyNeedModel (needAAorCS: String)
 

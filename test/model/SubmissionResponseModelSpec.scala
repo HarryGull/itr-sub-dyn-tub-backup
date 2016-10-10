@@ -15,7 +15,7 @@
  */
 
 package model
-import model.SubmissionResponse
+import models.submission.SubmissionResponse
 import play.api.libs.json.Json
 import uk.gov.hmrc.play.test.UnitSpec
 
@@ -26,7 +26,7 @@ class SubmissionResponseSpec extends UnitSpec {
   // form json to model - unapply
   "call unapply successfully to create ss Json" in {
     implicit val formats = Json.format[SubmissionResponse]
-    val response = SubmissionResponse(true, "FBUND98763284", "Submission Request Successful")
+    val response = SubmissionResponse("2014-12-17T09:30:47Z", "FBUND98763284")
 
     val json = Json.toJson(response)
     println(json)
@@ -40,9 +40,8 @@ class SubmissionResponseSpec extends UnitSpec {
 
     val response =  Json.parse(testJson.toString()).as[SubmissionResponse]
 
-    response.status  shouldBe true
-    response.message  shouldBe "Submission Request Successful"
-    response.formBundleId  shouldBe "FBUND98763284"
+    response.formBundleNumber.startsWith("FBUND")  shouldBe true
+    response.processingDate  shouldBe "2014-12-17T09:30:47Zl"
   }
 
 }
