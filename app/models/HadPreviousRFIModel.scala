@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package model
+package models
 
 import play.api.libs.json.Json
 
-case class SubmissionResponseTest(status: Boolean, nino: String, message: String)
+case class HadPreviousRFIModel (hadPreviousRFI : String)
 
-object Implicits {
-  implicit val persistedSubmissionTestResponseFormat = Json.format[SubmissionResponseTest]
-}
-
-object SubmissionResponseTest {
-  implicit val formats = Json.format[SubmissionResponseTest]
+object HadPreviousRFIModel {
+  implicit val format = Json.format[HadPreviousRFIModel]
+  implicit val writes = Json.writes[HadPreviousRFIModel]
 }

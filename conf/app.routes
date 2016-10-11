@@ -1,6 +1,4 @@
 # microservice specific routes
 
-# individual (nino) routes (made up to test rest url)
-GET     /individual/:nino/assurance        controllers.SubmissionStubController.testResponse(nino:String)
+POST    /taxpayers/:tavcReferenceId/returns      controllers.SubmissionStubController.submitAdvancedAssuranceApplication(tavcReferenceId: String)
 
-POST    /advanced-assurance/submit        controllers.SubmissionStubController.submitAdvancedAssuranceApplication

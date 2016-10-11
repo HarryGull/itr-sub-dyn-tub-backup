@@ -19,6 +19,7 @@ package controllers
 import uk.gov.hmrc.play.test.UnitSpec
 import play.api.libs.json.{JsSuccess, _}
 import model._
+import models.submission.SubmissionResponse
 
 object TestData {
 
@@ -30,7 +31,9 @@ object TestData {
   val noEnvHeadersExample = Map(authHeader)
   val emptyHeadersExample = Map[String,String]()
   val invalidRequestJsError = JsError("invalid request body")
-  val validSubmissionResponse =  SubmissionResponseTest(false, "nb887766A", "Success Reponse")
+
+  implicit val formats = Json.format[SubmissionResponse]
+  val validSubmissionResponse = SubmissionResponse("2014-12-17T09:30:47Z", "FBUND98763284")
 }
 class SubmissionStubControllerSpec extends UnitSpec {
   "The validation results for a valid testReponse and valid headers should be a success" should {

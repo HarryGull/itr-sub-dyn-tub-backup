@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package model
+package models
 
 import play.api.libs.json.Json
 
-case class Error(
-  message: String)
+case class NewGeographicalMarketModel (isNewGeographicalMarket: String)
 
-object Error {
-  implicit val errorFormat = Json.format[Error]
+object NewGeographicalMarketModel {
+  implicit val format = Json.format[NewGeographicalMarketModel]
+  implicit val writes = Json.writes[NewGeographicalMarketModel]
 }
