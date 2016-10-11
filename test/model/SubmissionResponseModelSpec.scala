@@ -21,7 +21,7 @@ import uk.gov.hmrc.play.test.UnitSpec
 
 class SubmissionResponseSpec extends UnitSpec {
 
-  val testJson = """{"status":true,"formBundleId":"FBUND98763284","message":"Submission Request Successful"}"""
+  val testJson = """{"processingDate":"2014-12-17T09:30:47Z","formBundleNumber":"FBUND98763284"}"""
 
   // form json to model - unapply
   "call unapply successfully to create ss Json" in {
@@ -41,7 +41,7 @@ class SubmissionResponseSpec extends UnitSpec {
     val response =  Json.parse(testJson.toString()).as[SubmissionResponse]
 
     response.formBundleNumber.startsWith("FBUND")  shouldBe true
-    response.processingDate  shouldBe "2014-12-17T09:30:47Zl"
+    response.processingDate  shouldBe "2014-12-17T09:30:47Z"
   }
 
 }
