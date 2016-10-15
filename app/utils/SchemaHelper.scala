@@ -40,6 +40,7 @@ object SchemaHelper {
 
     Try {
       // schema map
+      // $COVERAGE-OFF$
       val schemaMapper = new ObjectMapper()
       val factory = schemaMapper.getFactory
       val schemaParser = factory.createParser(schema)
@@ -54,6 +55,8 @@ object SchemaHelper {
       // validate
       val schemaFactory = JsonSchemaFactory.byDefault()
       val schemaValidator = schemaFactory.getJsonSchema(schemaJson)
+      // $COVERAGE-OFF$
+
 
       val report = schemaValidator.validate(jsonJson)
 
