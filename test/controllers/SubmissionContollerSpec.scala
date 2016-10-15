@@ -28,11 +28,11 @@ import org.scalatest.mock.MockitoSugar
 
 class SubmissionControllerSpec extends UnitSpec with WithFakeApplication with MockitoSugar with SubmissionFixture {
 
-  val mockRepository = mock[InvestmentTaxReliefSubmissionRepository]
+  val mockRepository: InvestmentTaxReliefSubmissionRepository = mock[InvestmentTaxReliefSubmissionRepository]
 
-  val tavcReferenceId = "AA1234567890000"
+  val tavcReferenceId:String = "AA1234567890000"
 
-  class Setup {
+  private class Setup {
 
     object TestController extends SubmissionStubController {
       val investmentTaxReliefSubmissionRepository: InvestmentTaxReliefSubmissionRepository = mockRepository
