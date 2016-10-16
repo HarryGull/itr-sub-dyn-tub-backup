@@ -57,7 +57,18 @@ object SchemaHelper {
 
     } match {
       case Success(result) => result
-      case Failure(_) => false
+      case Failure(e: JsonParseException) => {
+        Logger.error(s"getJsonValidationReport: There was an error parsing the Json: ${e.getMessage}")
+        false
+      }
+      case Failure(e: JsonProcessingException) => {
+        Logger.error(s"getJsonValidationReport: There was an Json Validator Processing Exception: ${e.getMessage}")
+        false
+      }
+      case Failure(e) => {
+        Logger.error(s"getJsonValidationReport: There was an a general exception: ${e.getMessage}")
+        false
+      }
     }
   }
 
