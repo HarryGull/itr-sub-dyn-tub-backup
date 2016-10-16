@@ -16,47 +16,43 @@
 
 package utils
 
+import com.fasterxml.jackson.core.{JsonParseException, JsonProcessingException}
 import com.fasterxml.jackson.databind.{JsonNode, ObjectMapper}
 import com.github.fge.jsonschema.core.report.ProcessingReport
-import com.github.fge.jsonschema.main.JsonSchemaFactory
-import play.api.Play
+import com.github.fge.jsonschema.main.{JsonSchema, JsonSchemaFactory}
+import play.api.{Logger, Play}
 
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
-
 
 object SchemaHelper {
 
   val schemaFile = "SubmissionSchemaV03"
   lazy val schema = SchemaHelper.getSchema
+  lazy val schemaValidator = getSchemaValidator
+  lazy val jsonMapper = new ObjectMapper()
+  lazy val jsonFactory = jsonMapper.getFactory
 
-  def getSchema: String =
-  {
+  def getSchema: String = {
     // schema loaded from conf folder
     Source.fromInputStream(Play.classloader(Play.current).getResourceAsStream(schemaFile), "UTF-8").getLines().mkString("\n")
+  }
+
+  def getSchemaValidator: JsonSchema = {
+    val schemaMapper = new ObjectMapper()
+    val factory = schemaMapper.getFactory
+    val schemaParser = factory.createParser(schema)
+    val schemaJson: JsonNode = schemaMapper.readTree(schemaParser)
+    val schemaFactory = JsonSchemaFactory.byDefault()
+    schemaFactory.getJsonSchema(schemaJson)
   }
 
   def validateJson(json: String): Boolean = {
 
     Try {
-      // schema map
-      val schemaMapper = new ObjectMapper()
-      val factory = schemaMapper.getFactory
-      val schemaParser = factory.createParser(schema)
-      val schemaJson: JsonNode = schemaMapper.readTree(schemaParser)
-
-      // json to validate
-      val jsonMapper = new ObjectMapper()
-      val jsonFactory = jsonMapper.getFactory
       val jsonParser = jsonFactory.createParser(json)
       val jsonJson: JsonNode = jsonMapper.readTree(jsonParser)
-
-      // validate
-      val schemaFactory = JsonSchemaFactory.byDefault()
-      val schemaValidator = schemaFactory.getJsonSchema(schemaJson)
-
       val report = schemaValidator.validate(jsonJson)
-
       report.isSuccess
 
     } match {
@@ -68,26 +64,24 @@ object SchemaHelper {
   def getJsonValidationReport(json: String): Option[ProcessingReport] = {
 
     Try {
-      // schema map
-      val schemaMapper = new ObjectMapper()
-      val factory = schemaMapper.getFactory
-      val schemaParser = factory.createParser(schema)
-      val schemaJson: JsonNode = schemaMapper.readTree(schemaParser)
-
-      // json to validate
-      val jsonMapper = new ObjectMapper()
-      val jsonFactory = jsonMapper.getFactory
       val jsonParser = jsonFactory.createParser(json)
       val jsonJson: JsonNode = jsonMapper.readTree(jsonParser)
-
-      // validate
-      val schemaFactory = JsonSchemaFactory.byDefault()
-      val schemaValidator = schemaFactory.getJsonSchema(schemaJson)
       schemaValidator.validate(jsonJson)
 
     } match {
       case Success(result) => Some(result)
-      case Failure(_) => None
+      case Failure(e: JsonParseException) => {
+        Logger.error(s"getJsonValidationReport: There was an error parsing the Json: ${e.getMessage}")
+        None
+      }
+      case Failure(e: JsonProcessingException) => {
+        Logger.error(s"getJsonValidationReport: There was an Json Validator Processing Exception: ${e.getMessage}")
+        None
+      }
+      case Failure(e) => {
+        Logger.error(s"getJsonValidationReport: There was an a general exception: ${e.getMessage}")
+        None
+      }
     }
   }
 
