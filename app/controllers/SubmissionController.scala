@@ -18,22 +18,13 @@ package controllers
 
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import models._
-import models.submission.{DesSubmitAdvancedAssuranceModel, SubmissionResponse}
+import models.submission.SubmissionResponse
 import play.api.libs.json.{JsError, JsResult, JsValue, Json}
 import play.api.mvc._
 
 import scala.concurrent.Future
 import mongo.InvestmentTaxReliefSubmissionRepository
-
-//THE BELOW ARE REQUIRED
-import ContactDetailsModel.format
-import YourCompanyNeedModel.format
-
-
-/**
-  * The controller for the Investment Tax Relief Submission service REST API dynamic stub
-  *
-  **/
+import utils.SchemaHelper
 
 object SubmissionStubController extends SubmissionStubController{
   val investmentTaxReliefSubmissionRepository = InvestmentTaxReliefSubmissionRepository()
@@ -46,42 +37,47 @@ trait SubmissionStubController extends BaseController {
   //noinspection ScalaStyle
   def submitAdvancedAssuranceApplication(tavcReferenceId: String) = Action.async (BodyParsers.parse.json) { implicit request =>
 
-    val submissionApplicationBodyJs = request.body.validate[DesSubmitAdvancedAssuranceModel]
-    //val headers = request.headers.toSimpleMap
-    //val submissionApplicationBodyJs = ControllerHelper.addExtraRequestHeaderChecks(headers, submissionApplicationBodyJs)
+    val jsonBody = request.body.toString()
 
-    submissionApplicationBodyJs.fold(
-      errors => Future.successful(BadRequest(Json.toJson(Error(
-        message="Request to submit application failed with validation errors: " + errors)))),
-      submitRequest => {
+    val validationReport = SchemaHelper.getJsonValidationReport(jsonBody)
 
-        val emailLower =
-          submitRequest.submissionType.correspondenceDetails.contactDetails.emailAddress.getOrElse("").toLowerCase()
-        // Some simple faked responses based on the email input parameter
-        // This is a just a simple temporary approach until we have the proper submission/JSON and APIs
-        emailLower match {
-          case email if email.contains("badrequest") => {
-            Future.successful(BadRequest(Json.toJson(Error(
-              message="Request to submit application failed with validation errors" ))))
-          }
-          case email if email.contains("forbiddenrequest") => {
-            Future.successful(Forbidden(Json.toJson(Error(message="Forbidden" ))))
-          }
-          case email if email.contains("internalservererrorrequest") => {
-            Future.successful(InternalServerError(Json.toJson(Error(message="Internal Server Error" ))))
-          }
-          case email if email.contains("serviceunavailablerequest") => {
-            Future.successful(ServiceUnavailable(Json.toJson(Error(message="Service Unavailable" ))))
-          }
-          case _ => {
-            Future.successful(Created(Json.toJson(SubmissionResponse("2014-12-17T09:30:47Z", generateFormbundleId()))))
-          }
+    if (validationReport.fold(true)(_.isSuccess == false)) {
+      Future.successful(BadRequest(Json.toJson(Error(
+        reason = "Request to submit application failed with validation errors:" + validationReport.toString))))
+    }
+    else {
+      //val headers = request.headers.toSimpleMap
+      //val submissionApplicationBodyJs = ControllerHelper.addExtraRequestHeaderChecks(headers, submissiovanApplicationBodyJs)
+
+      val emailFromJson = Json.parse(jsonBody).as[EmailModel]
+      val emailLower = emailFromJson.emailAddress.getOrElse("").toLowerCase()
+
+      // return faked expected responses for testing based on the email value passed.
+      emailLower match {
+        case email if email.contains("badrequest") => {
+          Future.successful(BadRequest(Json.toJson(Error(
+            reason = "Request to submit application failed with validation errors"))))
+        }
+        case email if email.contains("forbiddenrequest") => {
+          Future.successful(Forbidden(Json.toJson(Error(reason = "Forbidden"))))
+        }
+        case email if email.contains("internalservererrorrequest") => {
+          Future.successful(InternalServerError(Json.toJson(Error(reason = "Internal Server Error"))))
+        }
+        case email if email.contains("serviceunavailablerequest") => {
+          Future.successful(ServiceUnavailable(Json.toJson(Error(reason = "Service Unavailable"))))
+        }
+        case email if email.contains("getsubmittedjson") => {
+          Future.successful(BadRequest(Json.toJson(Error(reason = jsonBody))))
+        }
+        case _ => {
+          Future.successful(Ok(Json.toJson(SubmissionResponse("2014-12-17T09:30:47Z", generateFormBundleId()))))
         }
       }
-    )
+    }
   }
 
-  def generateFormbundleId(): String = {
+  def generateFormBundleId(): String = {
     val start = 10000000
     val end =   99999999
     // prepend a string value

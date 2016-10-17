@@ -16,11 +16,19 @@
 
 package models
 
-import play.api.libs.json.Json
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
-case class NewGeographicalMarketModel (isNewGeographicalMarket: String)
+case class EmailModel(
+                       emailAddress:Option[String],
+                       nodata:Option[String]
+                     )
 
-object NewGeographicalMarketModel {
-  implicit val format = Json.format[NewGeographicalMarketModel]
-  implicit val writes = Json.writes[NewGeographicalMarketModel]
+object EmailModel {
+  implicit val writes = Json.writes[EmailModel]
+
+  implicit val formatCdReads: Reads[EmailModel] = (
+    (__ \ "submissionType" \ "correspondenceDetails" \ "contactDetails" \ "emailAddress").readNullable[String] and
+      (__ \ "submissionType" \ "correspondenceDetails" \ "contactDetails" \ "nodata").readNullable[String]
+    ) (EmailModel.apply _)
 }

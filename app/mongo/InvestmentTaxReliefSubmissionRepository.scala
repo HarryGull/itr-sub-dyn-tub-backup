@@ -16,7 +16,7 @@
 
 package mongo
 
-import models.submission.DesSubmitAdvancedAssuranceModel
+import models.submission.SubmissionResponse
 import play.modules.reactivemongo.MongoDbConnection
 import reactivemongo.api.DB
 import uk.gov.hmrc.mongo.{ReactiveRepository, Repository}
@@ -32,12 +32,13 @@ object InvestmentTaxReliefSubmissionRepository extends MongoDbConnection {
   def apply() : InvestmentTaxReliefSubmissionRepository = repository
 }
 
-trait InvestmentTaxReliefSubmissionRepository extends Repository[DesSubmitAdvancedAssuranceModel, BSONObjectID] {
+//TODO: the model used below would be the model we wish to store - probably subscription data later
+trait InvestmentTaxReliefSubmissionRepository extends Repository[SubmissionResponse, BSONObjectID] {
     def wipeTestData() : Future[Unit]
 }
 
 class MongoSubmissionRepository(implicit mongo: () => DB)
-  extends ReactiveRepository[DesSubmitAdvancedAssuranceModel, BSONObjectID]("submissions", mongo, DesSubmitAdvancedAssuranceModel.DesfFullSubmitAAModelFormat)
+  extends ReactiveRepository[SubmissionResponse, BSONObjectID]("submissions", mongo, SubmissionResponse.formats)
     with InvestmentTaxReliefSubmissionRepository {
 
   override def wipeTestData(): Future[Unit] = {

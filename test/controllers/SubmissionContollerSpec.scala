@@ -28,11 +28,11 @@ import org.scalatest.mock.MockitoSugar
 
 class SubmissionControllerSpec extends UnitSpec with WithFakeApplication with MockitoSugar with SubmissionFixture {
 
-  val mockRepository = mock[InvestmentTaxReliefSubmissionRepository]
+  val mockRepository: InvestmentTaxReliefSubmissionRepository = mock[InvestmentTaxReliefSubmissionRepository]
 
-  val tavcReferenceId = "AA1234567890000"
+  val tavcReferenceId:String = "AA1234567890000"
 
-  class Setup {
+  private class Setup {
 
     object TestController extends SubmissionStubController {
       val investmentTaxReliefSubmissionRepository: InvestmentTaxReliefSubmissionRepository = mockRepository
@@ -46,15 +46,22 @@ class SubmissionControllerSpec extends UnitSpec with WithFakeApplication with Mo
       val submissionResponse: SubmissionResponse = jsonBodyOf(result).as[SubmissionResponse]
       submissionResponse.formBundleNumber.startsWith("FBUND") shouldEqual true
       submissionResponse.processingDate shouldEqual "2014-12-17T09:30:47Z"
-      status(result) shouldBe CREATED
+      status(result) shouldBe OK
 
     }
   }
 
   "The stub should return an internal server error if the email contains the text internalservererror " should {
     "return a json package detailing the status" in new Setup {
-      val resultr = TestController.submitAdvancedAssuranceApplication(tavcReferenceId).apply(FakeRequest().withBody(InternalServerErrJs))
-      status(resultr) shouldBe INTERNAL_SERVER_ERROR
+      val result = TestController.submitAdvancedAssuranceApplication(tavcReferenceId).apply(FakeRequest().withBody(InternalServerErrJs))
+      status(result) shouldBe INTERNAL_SERVER_ERROR
+    }
+  }
+
+  "The stub should return an bad request server error if the schema validation of the JSON fails " should {
+    "return a json package detailing the status" in new Setup {
+      val result = TestController.submitAdvancedAssuranceApplication(tavcReferenceId).apply(FakeRequest().withBody(invalidSchemaJs))
+      status(result) shouldBe BAD_REQUEST
     }
   }
 

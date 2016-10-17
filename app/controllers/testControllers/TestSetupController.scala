@@ -17,7 +17,7 @@
 package controllers.testControllers
 
 import models.Error
-import models.submission.DesSubmitAdvancedAssuranceModel
+import models.submission.SubmissionResponse
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import play.api.mvc.{Action, BodyParsers, Results}
@@ -34,10 +34,11 @@ trait TestSetupController extends BaseController {
 
   val investmentTaxReliefSubmissionRepository : InvestmentTaxReliefSubmissionRepository
 
+  // TODO: model would be not be SubmissionResponse as below. Will change to a realistic model later
   def insertSubmissionRecord() : Action[JsValue] = Action.async(BodyParsers.parse.json) { implicit request =>
-    val submissionRecordJs = request.body.validate[DesSubmitAdvancedAssuranceModel]
+    val submissionRecordJs = request.body.validate[SubmissionResponse]
     submissionRecordJs.fold(
-      errors => Future.successful(BadRequest(Json.toJson(Error(message = "" + errors)))),
+      errors => Future.successful(BadRequest(Json.toJson(Error(reason = "" + errors)))),
       submissionRequest =>
         investmentTaxReliefSubmissionRepository.insert(submissionRequest).map {
           _ => Ok

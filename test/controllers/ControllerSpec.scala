@@ -18,7 +18,6 @@ package controllers
 
 import uk.gov.hmrc.play.test.UnitSpec
 import play.api.libs.json.{JsSuccess, _}
-import model._
 import models.submission.SubmissionResponse
 
 object TestData {

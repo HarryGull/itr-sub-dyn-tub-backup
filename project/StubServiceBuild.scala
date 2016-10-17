@@ -4,7 +4,6 @@ import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
 import uk.gov.hmrc.versioning.SbtGitVersioning
 
 object StubServiceBuild extends Build with MicroService {
-  import scala.util.Properties.envOrElse
 
   val appName = "investment-tax-relief-submission-dynamic-stub"
 
@@ -31,7 +30,8 @@ private object AppDependencies {
     "uk.gov.hmrc" %% "play-health" % playHealthVersion,
     "uk.gov.hmrc" %% "play-config" % playConfigVersion,
     "uk.gov.hmrc" %% "play-json-logger" % "2.1.1",
-    "uk.gov.hmrc" %% "play-reactivemongo" % "4.8.0"
+    "uk.gov.hmrc" %% "play-reactivemongo" % "4.8.0",
+    "com.github.fge" % "json-schema-validator" % "2.2.6"
   )
 
   trait TestDependencies {
@@ -40,7 +40,7 @@ private object AppDependencies {
   }
 
   object Test {
-    def apply() = new TestDependencies {
+    def apply() :Seq[ModuleID] = new TestDependencies {
       override lazy val test = Seq(
         "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
         "org.scalatest" %% "scalatest" % "2.2.6" % scope,
