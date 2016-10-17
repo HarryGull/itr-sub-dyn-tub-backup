@@ -43,7 +43,7 @@ trait SubmissionStubController extends BaseController {
 
     if (validationReport.fold(true)(_.isSuccess == false)) {
       Future.successful(BadRequest(Json.toJson(Error(
-        message = "Request to submit application failed with validation errors:" + validationReport.toString))))
+        reason = "Request to submit application failed with validation errors:" + validationReport.toString))))
     }
     else {
       //val headers = request.headers.toSimpleMap
@@ -56,19 +56,19 @@ trait SubmissionStubController extends BaseController {
       emailLower match {
         case email if email.contains("badrequest") => {
           Future.successful(BadRequest(Json.toJson(Error(
-            message = "Request to submit application failed with validation errors"))))
+            reason = "Request to submit application failed with validation errors"))))
         }
         case email if email.contains("forbiddenrequest") => {
-          Future.successful(Forbidden(Json.toJson(Error(message = "Forbidden"))))
+          Future.successful(Forbidden(Json.toJson(Error(reason = "Forbidden"))))
         }
         case email if email.contains("internalservererrorrequest") => {
-          Future.successful(InternalServerError(Json.toJson(Error(message = "Internal Server Error"))))
+          Future.successful(InternalServerError(Json.toJson(Error(reason = "Internal Server Error"))))
         }
         case email if email.contains("serviceunavailablerequest") => {
-          Future.successful(ServiceUnavailable(Json.toJson(Error(message = "Service Unavailable"))))
+          Future.successful(ServiceUnavailable(Json.toJson(Error(reason = "Service Unavailable"))))
         }
         case email if email.contains("getsubmittedjson") => {
-          Future.successful(BadRequest(Json.toJson(Error(message = jsonBody))))
+          Future.successful(BadRequest(Json.toJson(Error(reason = jsonBody))))
         }
         case _ => {
           Future.successful(Ok(Json.toJson(SubmissionResponse("2014-12-17T09:30:47Z", generateFormBundleId()))))

@@ -38,7 +38,7 @@ trait TestSetupController extends BaseController {
   def insertSubmissionRecord() : Action[JsValue] = Action.async(BodyParsers.parse.json) { implicit request =>
     val submissionRecordJs = request.body.validate[SubmissionResponse]
     submissionRecordJs.fold(
-      errors => Future.successful(BadRequest(Json.toJson(Error(message = "" + errors)))),
+      errors => Future.successful(BadRequest(Json.toJson(Error(reason = "" + errors)))),
       submissionRequest =>
         investmentTaxReliefSubmissionRepository.insert(submissionRequest).map {
           _ => Ok
