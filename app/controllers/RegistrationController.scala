@@ -29,10 +29,12 @@ trait RegistrationController extends BaseController {
   def getRegistrationDetails(safeid: String): Action[AnyContent] = Action.async {
     implicit request =>
       safeid match {
-        case Constants.minimumRegResponseSafeID => Future.successful(Ok(JsonResponses.minimumRegResponse))
-        case Constants.maxAddressRegResponseSafeID => Future.successful(Ok(JsonResponses.maxAddressRegResponse))
-        case Constants.maxContactDetailsRegResponseSafeID => Future.successful(Ok(JsonResponses.maxContactDetailsRegResponse))
-        case Constants.maximumRegResponseSafeID => Future.successful(Ok(JsonResponses.maximumRegResponse))
+        case Constants.minimumRegSafeID => Future.successful(Ok(JsonResponses.minimumRegResponse))
+        case Constants.maxAddressRegSafeID => Future.successful(Ok(JsonResponses.maxAddressRegResponse))
+        case Constants.maxContactDetailsRegSafeID => Future.successful(Ok(JsonResponses.maxContactDetailsRegResponse))
+        case Constants.maximumRegSafeID => Future.successful(Ok(JsonResponses.maximumRegResponse))
+        case Constants.maximumRegSafeID => Future.successful(Ok(JsonResponses.maximumRegResponse))
+        case Constants.failedRegSafeID => Future.successful(BadRequest(JsonResponses.failedRegResponse))
         case _ => Future.successful(Ok(JsonResponses.maximumRegResponse))
       }
   }

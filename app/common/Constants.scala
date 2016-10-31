@@ -18,9 +18,9 @@ package common
 
 object Constants {
 
-  val minimumRegResponseSafeID = "XA0001234567890"
-  val maxAddressRegResponseSafeID = "XA0002345678901"
-  val maxContactDetailsRegResponseSafeID = "XA0003456789012"
-  val maximumRegResponseSafeID = "XA0004567890123"
-
+  val minimumRegSafeID = "XA0001234567890"
+  val maxAddressRegSafeID = "XA0002345678901"
+  val maxContactDetailsRegSafeID = "XA0003456789012"
+  val maximumRegSafeID = "XA0004567890123"
+  val failedRegSafeID = "XA0005678901234"
 }

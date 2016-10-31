@@ -24,13 +24,15 @@ import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 class RegistrationControllerSpec extends UnitSpec with WithFakeApplication {
 
+  val otherSafeID = "XA0000000000000"
+
   object TestController extends RegistrationController
 
   "getRegistrationDetails" when {
 
     "The minimum safe ID is passed" should {
 
-      lazy val result = TestController.getRegistrationDetails(Constants.minimumRegResponseSafeID).apply(FakeRequest())
+      lazy val result = TestController.getRegistrationDetails(Constants.minimumRegSafeID).apply(FakeRequest())
 
       "return OK" in {
         status(result) shouldBe OK
@@ -44,7 +46,7 @@ class RegistrationControllerSpec extends UnitSpec with WithFakeApplication {
 
     "The max address safe ID is passed" should {
 
-      lazy val result = TestController.getRegistrationDetails(Constants.maxAddressRegResponseSafeID).apply(FakeRequest())
+      lazy val result = TestController.getRegistrationDetails(Constants.maxAddressRegSafeID).apply(FakeRequest())
 
       "return OK" in {
         status(result) shouldBe OK
@@ -58,7 +60,7 @@ class RegistrationControllerSpec extends UnitSpec with WithFakeApplication {
 
     "The max contact details safe ID is passed" should {
 
-      lazy val result = TestController.getRegistrationDetails(Constants.maxContactDetailsRegResponseSafeID).apply(FakeRequest())
+      lazy val result = TestController.getRegistrationDetails(Constants.maxContactDetailsRegSafeID).apply(FakeRequest())
 
       "return OK" in {
         status(result) shouldBe OK
@@ -72,7 +74,7 @@ class RegistrationControllerSpec extends UnitSpec with WithFakeApplication {
 
     "The maximum details safe ID is passed" should {
 
-      lazy val result = TestController.getRegistrationDetails(Constants.maximumRegResponseSafeID).apply(FakeRequest())
+      lazy val result = TestController.getRegistrationDetails(Constants.maximumRegSafeID).apply(FakeRequest())
 
       "return OK" in {
         status(result) shouldBe OK
@@ -83,5 +85,33 @@ class RegistrationControllerSpec extends UnitSpec with WithFakeApplication {
       }
 
     }
+
+    "The failure safe ID is passed" should {
+
+      lazy val result = TestController.getRegistrationDetails(Constants.failedRegSafeID).apply(FakeRequest())
+
+      "return OK" in {
+        status(result) shouldBe BAD_REQUEST
+      }
+
+      "return maximum registration details JSON" in {
+        Json.parse(contentAsString(result)) shouldBe JsonResponses.failedRegResponse
+      }
+
+    }
+  }
+
+  "Any other safe ID is passed" should {
+
+    lazy val result = TestController.getRegistrationDetails(otherSafeID).apply(FakeRequest())
+
+    "return OK" in {
+      status(result) shouldBe OK
+    }
+
+    "return maximum registration details JSON" in {
+      Json.parse(contentAsString(result)) shouldBe JsonResponses.maximumRegResponse
+    }
+
   }
 }

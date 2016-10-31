@@ -130,4 +130,13 @@ object JsonResponses {
       |}""".stripMargin
   )
 
+  // SAFE ID: XA0005678901234
+  val failedRegResponse = Json.parse(
+    """
+      |{
+      |  "reason":"Error 001"
+      |}
+    """.stripMargin
+  )
+
 }
