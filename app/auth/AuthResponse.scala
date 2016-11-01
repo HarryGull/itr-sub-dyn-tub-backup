@@ -14,16 +14,8 @@
  * limitations under the License.
  */
 
-package common
+package auth
 
-object Constants {
-
-  val minimumRegSafeID = "XA0001234567890"
-  val maxAddressRegSafeID = "XA0002345678901"
-  val maxContactDetailsRegSafeID = "XA0003456789012"
-  val maximumRegSafeID = "XA0004567890123"
-  val submissionErrorSafeID = "XA0005678901234"
-  val resourceNotFoundSafeID = "XA0006789012345"
-  val serverErrorSafeID = "XA0007890123456"
-  val serviceUnavailableSafeID = "XA0008901234567"
-}
+sealed trait AuthResponse {}
+case object Authorised extends AuthResponse
+case class NotAuthorised(error: String) extends AuthResponse

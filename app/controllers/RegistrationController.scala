@@ -16,6 +16,7 @@
 
 package controllers
 
+import auth.{Authorisation, Authorised, NotAuthorised}
 import common.{Constants, JsonResponses}
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.microservice.controller.BaseController
@@ -24,19 +25,27 @@ import scala.concurrent.Future
 
 object RegistrationController extends RegistrationController
 
-trait RegistrationController extends BaseController {
+trait RegistrationController extends BaseController with Authorisation {
 
-  def getRegistrationDetails(safeid: String): Action[AnyContent] = Action.async {
-    implicit request =>
-      safeid match {
-        case Constants.minimumRegSafeID => Future.successful(Ok(JsonResponses.minimumRegResponse))
-        case Constants.maxAddressRegSafeID => Future.successful(Ok(JsonResponses.maxAddressRegResponse))
-        case Constants.maxContactDetailsRegSafeID => Future.successful(Ok(JsonResponses.maxContactDetailsRegResponse))
-        case Constants.maximumRegSafeID => Future.successful(Ok(JsonResponses.maximumRegResponse))
-        case Constants.maximumRegSafeID => Future.successful(Ok(JsonResponses.maximumRegResponse))
-        case Constants.failedRegSafeID => Future.successful(BadRequest(JsonResponses.failedRegResponse))
-        case _ => Future.successful(Ok(JsonResponses.maximumRegResponse))
+  //noinspection ScalaStyle
+  def getRegistrationDetails(safeid: String): Action[AnyContent] = Action.async { implicit request =>
+    authorised {
+      case Authorised => {
+        safeid match {
+          case Constants.minimumRegSafeID => Future.successful(Ok(JsonResponses.minimumRegResponse))
+          case Constants.maxAddressRegSafeID => Future.successful(Ok(JsonResponses.maxAddressRegResponse))
+          case Constants.maxContactDetailsRegSafeID => Future.successful(Ok(JsonResponses.maxContactDetailsRegResponse))
+          case Constants.maximumRegSafeID => Future.successful(Ok(JsonResponses.maximumRegResponse))
+          case Constants.maximumRegSafeID => Future.successful(Ok(JsonResponses.maximumRegResponse))
+          case Constants.submissionErrorSafeID => Future.successful(BadRequest(JsonResponses.submissionErrorResponse))
+          case Constants.resourceNotFoundSafeID => Future.successful(NotFound(JsonResponses.resourceNotFoundResponse))
+          case Constants.serverErrorSafeID => Future.successful(InternalServerError(JsonResponses.serverErrorResponse))
+          case Constants.serviceUnavailableSafeID => Future.successful(ServiceUnavailable(JsonResponses.serviceUnavailableResponse))
+          case _ => Future.successful(Ok(JsonResponses.maximumRegResponse))
+        }
       }
+      case NotAuthorised(error) => Future.successful(Unauthorized(error))
+    }
   }
 
 }

@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package common
+package helpers
 
-object Constants {
+import play.api.test.FakeRequest
 
-  val minimumRegSafeID = "XA0001234567890"
-  val maxAddressRegSafeID = "XA0002345678901"
-  val maxContactDetailsRegSafeID = "XA0003456789012"
-  val maximumRegSafeID = "XA0004567890123"
-  val submissionErrorSafeID = "XA0005678901234"
-  val resourceNotFoundSafeID = "XA0006789012345"
-  val serverErrorSafeID = "XA0007890123456"
-  val serviceUnavailableSafeID = "XA0008901234567"
+object AuthHelpers {
+
+  val authHeader = "Authorization" -> "Bearer: abcdef12345678901234567890"
+  val envHeader = "Environment" -> "clone"
+  val badEnvHeader = "Environment" -> "test"
+  val validRequest = FakeRequest().withHeaders(authHeader,envHeader)
+  val badEnvRequest = FakeRequest().withHeaders(authHeader,badEnvHeader)
+  val noEnvRequest = FakeRequest().withHeaders(authHeader)
+  val noAuthRequest = FakeRequest().withHeaders(envHeader)
+  val emptyRequest = FakeRequest()
 }

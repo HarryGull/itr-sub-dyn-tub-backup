@@ -16,23 +16,24 @@
 
 package controllers
 
+import helpers.AuthHelpers._
 import common.{Constants, JsonResponses}
 import play.api.libs.json.Json
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
 
 class RegistrationControllerSpec extends UnitSpec with WithFakeApplication {
 
   val otherSafeID = "XA0000000000000"
+  val noEnvResponse = "required header 'Environment' not set in ETMP request"
 
   object TestController extends RegistrationController
 
-  "getRegistrationDetails" when {
+  "getRegistrationDetails with valid headers" when {
 
     "The minimum safe ID is passed" should {
 
-      lazy val result = TestController.getRegistrationDetails(Constants.minimumRegSafeID).apply(FakeRequest())
+      lazy val result = TestController.getRegistrationDetails(Constants.minimumRegSafeID).apply(validRequest)
 
       "return OK" in {
         status(result) shouldBe OK
@@ -46,7 +47,7 @@ class RegistrationControllerSpec extends UnitSpec with WithFakeApplication {
 
     "The max address safe ID is passed" should {
 
-      lazy val result = TestController.getRegistrationDetails(Constants.maxAddressRegSafeID).apply(FakeRequest())
+      lazy val result = TestController.getRegistrationDetails(Constants.maxAddressRegSafeID).apply(validRequest)
 
       "return OK" in {
         status(result) shouldBe OK
@@ -60,7 +61,7 @@ class RegistrationControllerSpec extends UnitSpec with WithFakeApplication {
 
     "The max contact details safe ID is passed" should {
 
-      lazy val result = TestController.getRegistrationDetails(Constants.maxContactDetailsRegSafeID).apply(FakeRequest())
+      lazy val result = TestController.getRegistrationDetails(Constants.maxContactDetailsRegSafeID).apply(validRequest)
 
       "return OK" in {
         status(result) shouldBe OK
@@ -74,7 +75,7 @@ class RegistrationControllerSpec extends UnitSpec with WithFakeApplication {
 
     "The maximum details safe ID is passed" should {
 
-      lazy val result = TestController.getRegistrationDetails(Constants.maximumRegSafeID).apply(FakeRequest())
+      lazy val result = TestController.getRegistrationDetails(Constants.maximumRegSafeID).apply(validRequest)
 
       "return OK" in {
         status(result) shouldBe OK
@@ -86,32 +87,91 @@ class RegistrationControllerSpec extends UnitSpec with WithFakeApplication {
 
     }
 
-    "The failure safe ID is passed" should {
+    "The submission error safe ID is passed" should {
 
-      lazy val result = TestController.getRegistrationDetails(Constants.failedRegSafeID).apply(FakeRequest())
+      lazy val result = TestController.getRegistrationDetails(Constants.submissionErrorSafeID).apply(validRequest)
 
       "return OK" in {
         status(result) shouldBe BAD_REQUEST
       }
 
+      "return submission error JSON" in {
+        Json.parse(contentAsString(result)) shouldBe JsonResponses.submissionErrorResponse
+      }
+
+    }
+
+    "The resource not found safe ID is passed" should {
+
+      lazy val result = TestController.getRegistrationDetails(Constants.resourceNotFoundSafeID).apply(validRequest)
+
+      "return OK" in {
+        status(result) shouldBe NOT_FOUND
+      }
+
+      "return submission error JSON" in {
+        Json.parse(contentAsString(result)) shouldBe JsonResponses.resourceNotFoundResponse
+      }
+
+    }
+
+    "The server error safe ID is passed" should {
+
+      lazy val result = TestController.getRegistrationDetails(Constants.serverErrorSafeID).apply(validRequest)
+
+      "return OK" in {
+        status(result) shouldBe INTERNAL_SERVER_ERROR
+      }
+
+      "return submission error JSON" in {
+        Json.parse(contentAsString(result)) shouldBe JsonResponses.serverErrorResponse
+      }
+
+    }
+
+    "The service unavailable safe ID is passed" should {
+
+      lazy val result = TestController.getRegistrationDetails(Constants.serviceUnavailableSafeID).apply(validRequest)
+
+      "return OK" in {
+        status(result) shouldBe SERVICE_UNAVAILABLE
+      }
+
+      "return submission error JSON" in {
+        Json.parse(contentAsString(result)) shouldBe JsonResponses.serviceUnavailableResponse
+      }
+
+    }
+
+    "Any other safe ID is passed" should {
+
+      lazy val result = TestController.getRegistrationDetails(otherSafeID).apply(validRequest)
+
+      "return OK" in {
+        status(result) shouldBe OK
+      }
+
       "return maximum registration details JSON" in {
-        Json.parse(contentAsString(result)) shouldBe JsonResponses.failedRegResponse
+        Json.parse(contentAsString(result)) shouldBe JsonResponses.maximumRegResponse
       }
 
     }
   }
 
-  "Any other safe ID is passed" should {
+  "getRegistrationDetails with invalid headers" when {
 
-    lazy val result = TestController.getRegistrationDetails(otherSafeID).apply(FakeRequest())
+    "Any safe ID is passed" should {
 
-    "return OK" in {
-      status(result) shouldBe OK
+      lazy val result = TestController.getRegistrationDetails(otherSafeID).apply(noEnvRequest)
+
+      "return an error response" in {
+        contentAsString(result) shouldBe noEnvResponse
+      }
+
+      "return UNAUTHORIZED" in {
+        status(result) shouldBe UNAUTHORIZED
+      }
+
     }
-
-    "return maximum registration details JSON" in {
-      Json.parse(contentAsString(result)) shouldBe JsonResponses.maximumRegResponse
-    }
-
   }
 }

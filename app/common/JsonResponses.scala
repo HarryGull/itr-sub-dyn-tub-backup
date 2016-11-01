@@ -131,10 +131,37 @@ object JsonResponses {
   )
 
   // SAFE ID: XA0005678901234
-  val failedRegResponse = Json.parse(
+  val submissionErrorResponse = Json.parse(
     """
       |{
-      |  "reason":"Error 001"
+      |  "reason":"Your submission contains one or more errors"
+      |}
+    """.stripMargin
+  )
+
+  // SAFE ID: XA0006789012345
+  val resourceNotFoundResponse = Json.parse(
+    """
+      |{
+      |  "reason":"Resource not found"
+      |}
+    """.stripMargin
+  )
+
+  // SAFE ID: XA0007890123456
+  val serverErrorResponse = Json.parse(
+    """
+      |{
+      |  "reason":"Server error"
+      |}
+    """.stripMargin
+  )
+
+  // SAFE ID: XA0008901234567
+  val serviceUnavailableResponse = Json.parse(
+    """
+      |{
+      |  "reason":"Service unavailable"
       |}
     """.stripMargin
   )
