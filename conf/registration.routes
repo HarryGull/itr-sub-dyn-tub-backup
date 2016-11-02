@@ -1,0 +1,1 @@
+GET     /details                    controllers.RegistrationController.getRegistrationDetails(safeid: String)
