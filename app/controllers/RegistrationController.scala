@@ -18,6 +18,7 @@ package controllers
 
 import auth.{Authorisation, Authorised, NotAuthorised}
 import common.{Constants, JsonResponses}
+import play.Logger
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.play.microservice.controller.BaseController
 
@@ -31,20 +32,54 @@ trait RegistrationController extends BaseController with Authorisation {
   def getRegistrationDetails(safeid: String): Action[AnyContent] = Action.async { implicit request =>
     authorised {
       case Authorised => {
+        Logger.info(s"[RegistrationController][getRegistrationDetails] - " +  "Authorised")
         safeid match {
-          case Constants.minimumRegSafeID => Future.successful(Ok(JsonResponses.minimumRegResponse))
-          case Constants.maxAddressRegSafeID => Future.successful(Ok(JsonResponses.maxAddressRegResponse))
-          case Constants.maxContactDetailsRegSafeID => Future.successful(Ok(JsonResponses.maxContactDetailsRegResponse))
-          case Constants.maximumRegSafeID => Future.successful(Ok(JsonResponses.maximumRegResponse))
-          case Constants.maximumRegSafeID => Future.successful(Ok(JsonResponses.maximumRegResponse))
-          case Constants.submissionErrorSafeID => Future.successful(BadRequest(JsonResponses.submissionErrorResponse))
-          case Constants.resourceNotFoundSafeID => Future.successful(NotFound(JsonResponses.resourceNotFoundResponse))
-          case Constants.serverErrorSafeID => Future.successful(InternalServerError(JsonResponses.serverErrorResponse))
-          case Constants.serviceUnavailableSafeID => Future.successful(ServiceUnavailable(JsonResponses.serviceUnavailableResponse))
-          case _ => Future.successful(Ok(JsonResponses.maximumRegResponse))
+          case Constants.minimumRegSafeID => {
+            Logger.info(s"[RegistrationController][getRegistrationDetails] - " +  "MinReg")
+            Future.successful(Ok(JsonResponses.minimumRegResponse))
+          }
+          case Constants.maxAddressRegSafeID => {
+            Logger.info(s"[RegistrationController][getRegistrationDetails] - " +  "MaxAddress")
+            Future.successful(Ok(JsonResponses.maxAddressRegResponse))
+          }
+          case Constants.maxContactDetailsRegSafeID => {
+            Logger.info(s"[RegistrationController][getRegistrationDetails] - " +  "MaxContact")
+            Future.successful(Ok(JsonResponses.maxContactDetailsRegResponse))
+          }
+          case Constants.maximumRegSafeID => {
+            Logger.info(s"[RegistrationController][getRegistrationDetails] - " +  "MaxReg")
+            Future.successful(Ok(JsonResponses.maximumRegResponse))
+          }
+          case Constants.maximumRegSafeID => {
+            Logger.info(s"[RegistrationController][getRegistrationDetails] - " +  "MaxReg")
+            Future.successful(Ok(JsonResponses.maximumRegResponse))
+          }
+          case Constants.submissionErrorSafeID => {
+            Logger.info(s"[RegistrationController][getRegistrationDetails] - " +  "Subm error")
+            Future.successful(BadRequest(JsonResponses.submissionErrorResponse))
+          }
+          case Constants.resourceNotFoundSafeID => {
+            Logger.info(s"[RegistrationController][getRegistrationDetails] - " +  "Not Found")
+            Future.successful(NotFound(JsonResponses.resourceNotFoundResponse))
+          }
+          case Constants.serverErrorSafeID => {
+            Logger.info(s"[RegistrationController][getRegistrationDetails] - " +  "ServerError")
+            Future.successful(InternalServerError(JsonResponses.serverErrorResponse))
+          }
+          case Constants.serviceUnavailableSafeID => {
+            Logger.info(s"[RegistrationController][getRegistrationDetails] - " +  "ServiceUnavalable")
+            Future.successful(ServiceUnavailable(JsonResponses.serviceUnavailableResponse))
+          }
+          case _ => {
+            Logger.info(s"[RegistrationController][getRegistrationDetails] - " +  "Other")
+            Future.successful(Ok(JsonResponses.maximumRegResponse))
+          }
         }
       }
-      case NotAuthorised(error) => Future.successful(Unauthorized(error))
+      case NotAuthorised(error) => {
+        Logger.info(s"[RegistrationController][getRegistrationDetails] - " +  "UnAuthorised")
+        Future.successful(Unauthorized(error))
+      }
     }
   }
 
