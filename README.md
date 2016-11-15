@@ -15,7 +15,6 @@ GET, PUT and POST REST Endpoints to be defined below  (the below is an example o
  ..etc..
 
 
-
 The stub attempts to apply the same business rules as the full service.
 
 (The stub also supports DELETE operations for the purposes of making it easy to tear down test data - these are not supported on the production API of the service.)
