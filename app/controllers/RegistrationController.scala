@@ -50,10 +50,6 @@ trait RegistrationController extends BaseController with Authorisation {
             Logger.info(s"[RegistrationController][getRegistrationDetails] - " +  "MaxReg")
             Future.successful(Ok(JsonResponses.maximumRegResponse))
           }
-          case Constants.maximumRegSafeID => {
-            Logger.info(s"[RegistrationController][getRegistrationDetails] - " +  "MaxReg")
-            Future.successful(Ok(JsonResponses.maximumRegResponse))
-          }
           case Constants.submissionErrorSafeID => {
             Logger.info(s"[RegistrationController][getRegistrationDetails] - " +  "Subm error")
             Future.successful(BadRequest(JsonResponses.submissionErrorResponse))
