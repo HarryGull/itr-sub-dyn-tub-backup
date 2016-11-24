@@ -453,7 +453,7 @@ trait SubmissionFixture {
  |            "name2":"Last"
  |         },
  |         "contactDetails":{
- |            "phoneNumber":"01952 255899",
+ |            "phoneNumber":"00000000000",
  |            "emailAddress":"rubbbadrequeste@test.com"
  |         },
  |         "contactAddress":{
@@ -664,7 +664,7 @@ trait SubmissionFixture {
   |            "name2":"Last"
   |         },
   |         "contactDetails":{
-  |            "phoneNumber":"01952 255899",
+  |            "phoneNumber":"000000000000",
   |            "emailAddress":"rforbiddenrequest@test.com"
   |         },
   |         "contactAddress":{
@@ -876,7 +876,7 @@ trait SubmissionFixture {
   |            "name2":"Last"
   |         },
   |         "contactDetails":{
-  |            "phoneNumber":"01952 255899",
+  |            "phoneNumber":"00000000000",
   |            "emailAddress":"rforbiddenrequest@test.com"
   |         },
   |         "contactAddress":{
@@ -1088,7 +1088,7 @@ trait SubmissionFixture {
   |            "name2":"Last"
   |         },
   |         "contactDetails":{
-  |            "phoneNumber":"01952 255899",
+  |            "phoneNumber":"00000000000",
   |            "emailAddress":"hserviceunavailablerequest@test.com"
   |         },
   |         "contactAddress":{
