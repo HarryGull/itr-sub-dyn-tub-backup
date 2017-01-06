@@ -24,6 +24,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.UnitSpec
 import org.scalatest.mock.MockitoSugar
+import akka.actor.ActorSystem
+import akka.stream.ActorMaterializer
 
 
 class SubmissionControllerSpec extends UnitSpec with WithFakeApplication with MockitoSugar with SubmissionFixture {
@@ -31,6 +33,9 @@ class SubmissionControllerSpec extends UnitSpec with WithFakeApplication with Mo
   val mockRepository: InvestmentTaxReliefSubmissionRepository = mock[InvestmentTaxReliefSubmissionRepository]
 
   val tavcReferenceId:String = "AA1234567890000"
+
+  implicit lazy val actorSystem = ActorSystem()
+  implicit lazy val mat = ActorMaterializer()
 
   private class Setup {
 
