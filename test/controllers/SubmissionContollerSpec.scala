@@ -19,16 +19,16 @@ package controllers
 import fixtures.SubmissionFixture
 import models.submission.SubmissionResponse
 import mongo.InvestmentTaxReliefSubmissionRepository
-import uk.gov.hmrc.play.test.WithFakeApplication
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.UnitSpec
 import org.scalatest.mock.MockitoSugar
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
+import org.scalatestplus.play.OneAppPerSuite
 
 
-class SubmissionControllerSpec extends UnitSpec with WithFakeApplication with MockitoSugar with SubmissionFixture {
+class SubmissionControllerSpec extends UnitSpec with OneAppPerSuite with MockitoSugar with SubmissionFixture {
 
   val mockRepository: InvestmentTaxReliefSubmissionRepository = mock[InvestmentTaxReliefSubmissionRepository]
 

@@ -20,9 +20,10 @@ import helpers.AuthHelpers._
 import common.{Constants, JsonResponses}
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import uk.gov.hmrc.play.test.UnitSpec
+import org.scalatestplus.play.OneAppPerSuite
 
-class RegistrationControllerSpec extends UnitSpec with WithFakeApplication {
+class RegistrationControllerSpec extends UnitSpec with OneAppPerSuite {
 
   val otherSafeID = "XA0000000000000"
   val noEnvResponse = "required header 'Environment' not set in ETMP request"
