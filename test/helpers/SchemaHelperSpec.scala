@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,10 @@ package utils
 
 import com.github.fge.jsonschema.core.report.ProcessingReport
 import fixtures.SubmissionFixture
-import uk.gov.hmrc.play.test.{UnitSpec, WithFakeApplication}
+import uk.gov.hmrc.play.test.UnitSpec
 import play.api.libs.json.{JsSuccess, _}
 import models.submission.SubmissionResponse
+import org.scalatestplus.play.OneAppPerSuite
 
 object SchemaHelperSpec {
 
@@ -36,7 +37,7 @@ object SchemaHelperSpec {
   implicit val formats = Json.format[SubmissionResponse]
   val validSubmissionResponse = SubmissionResponse("2014-12-17T09:30:47Z", "FBUND98763284")
 }
-class SchemaHelperSpec extends UnitSpec with WithFakeApplication with SubmissionFixture{
+class SchemaHelperSpec extends UnitSpec with OneAppPerSuite with SubmissionFixture{
 
   "The schema getJsonValidationReport " should {
     "return None for the report if the json is empty" in {

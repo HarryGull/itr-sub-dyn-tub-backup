@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 HM Revenue & Customs
+ * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,18 +19,23 @@ package controllers
 import fixtures.SubmissionFixture
 import models.submission.SubmissionResponse
 import mongo.InvestmentTaxReliefSubmissionRepository
-import uk.gov.hmrc.play.test.WithFakeApplication
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.UnitSpec
 import org.scalatest.mock.MockitoSugar
+import akka.actor.ActorSystem
+import akka.stream.ActorMaterializer
+import org.scalatestplus.play.OneAppPerSuite
 
 
-class SubmissionControllerSpec extends UnitSpec with WithFakeApplication with MockitoSugar with SubmissionFixture {
+class SubmissionControllerSpec extends UnitSpec with OneAppPerSuite with MockitoSugar with SubmissionFixture {
 
   val mockRepository: InvestmentTaxReliefSubmissionRepository = mock[InvestmentTaxReliefSubmissionRepository]
 
   val tavcReferenceId:String = "AA1234567890000"
+
+  implicit lazy val actorSystem = ActorSystem()
+  implicit lazy val mat = ActorMaterializer()
 
   private class Setup {
 
@@ -86,4 +91,3 @@ class SubmissionControllerSpec extends UnitSpec with WithFakeApplication with Mo
     }
   }
 }
-
