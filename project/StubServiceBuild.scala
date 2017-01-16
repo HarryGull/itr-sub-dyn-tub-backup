@@ -18,7 +18,7 @@ private object AppDependencies {
   private val hmrcTestVersion = "2.2.0"
   private val logbackJsonLoggerVersion = "3.1.0"
   private val scalaTestVersion = "2.2.6"
-  private val pegdownVersion = "1.6.0"
+  private val pegDownVersion = "1.6.0"
   private val domainVersion = "4.0.0"
   private val playUrlBindersVersion = "2.0.0"
   private val mockitoAll = "1.9.5"
@@ -48,7 +48,7 @@ private object AppDependencies {
       override lazy val test = Seq(
         "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
         "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
-        "org.pegdown" % "pegdown" % pegdownVersion % scope,
+        "org.pegdown" % "pegdown" % pegDownVersion % scope,
         "org.mockito" % "mockito-all" % mockitoAll,
         "org.scalatestplus.play" %% "scalatestplus-play" % scalaTestPlus,
         "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
@@ -57,7 +57,21 @@ private object AppDependencies {
     }.test
   }
 
-  def apply() = compile ++ Test()
+  object IntegrationTest {
+    def apply() = new TestDependencies {
+
+      override lazy val scope: String = "it"
+
+      override lazy val test = Seq(
+        "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
+        "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
+        "org.pegdown" % "pegdown" % pegDownVersion % scope,
+        "com.typesafe.play" %% "play-test" % PlayVersion.current % scope
+      )
+    }.test
+  }
+
+  def apply() = compile ++ Test() ++ IntegrationTest()
 }
 
 
