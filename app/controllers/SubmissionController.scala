@@ -24,6 +24,7 @@ import play.api.mvc._
 
 import scala.concurrent.Future
 import mongo.InvestmentTaxReliefSubmissionRepository
+import play.api.Logger
 import utils.SchemaHelper
 
 object SubmissionStubController extends SubmissionStubController{
@@ -52,6 +53,8 @@ trait SubmissionStubController extends BaseController {
       val emailFromJson = Json.parse(jsonBody).as[EmailModel]
       val emailLower = emailFromJson.emailAddress.getOrElse("").toLowerCase()
 
+      Logger.info(s"JsonSubmitted for submitAdvancedAssuranceApplication is: $jsonBody")
+
       // return faked expected responses for testing based on the email value passed.
       emailLower match {
         case email if email.contains("badrequest") => {
@@ -71,6 +74,7 @@ trait SubmissionStubController extends BaseController {
           Future.successful(ServiceUnavailable(Json.toJson(Error(reason = "Service Unavailable"))))
         }
         case email if email.contains("getsubmittedjson") => {
+          Logger.info(s"[SubscriptionStubController][getsubmittedJson] is: $jsonBody")
           Future.successful(BadRequest(Json.toJson(Error(reason = jsonBody))))
         }
         case _ => {
