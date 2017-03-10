@@ -61,6 +61,9 @@ trait SubmissionStubController extends BaseController {
         case email if email.contains("forbiddenrequest") => {
           Future.successful(Forbidden(Json.toJson(Error(reason = "Forbidden"))))
         }
+        case email if email.contains("notfound") => {
+          Future.successful(NotFound(Json.toJson(Error(reason = "Not Found"))))
+        }
         case email if email.contains("internalservererrorrequest") => {
           Future.successful(InternalServerError(Json.toJson(Error(reason = "Internal Server Error"))))
         }
