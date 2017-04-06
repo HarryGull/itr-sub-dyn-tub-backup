@@ -26,4 +26,15 @@ object Constants {
   val resourceNotFoundSafeID = "XA0006789012345"
   val serverErrorSafeID = "XA0007890123456"
   val serviceUnavailableSafeID = "XA0008901234567"
+  val oneOrMoreErrors = "Your submission contains one or more errors"
+  val invalidMessageReceived = "Invalid JSON message received"
+  val err001 = "Error 001"
+  val err002 = "Error 002"
+  val err003 = "Error 003"
+  val err004 = "Error 004"
+  val err999 = "Error 999"
+  val resourceNotFound = "Resource not found"
+  val serverError = "Server error"
+  val serviceUnavailable = "Service unavailable"
+
 }
