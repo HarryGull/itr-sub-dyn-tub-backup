@@ -16,22 +16,28 @@
 
 package controllers
 
+import common.{Constants, JsonResponseGetSubmissionHistory, TavcReferenceConstants}
+import common.Validation._
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import models._
 import models.submission.SubmissionResponse
 import play.api.libs.json.{JsError, JsResult, JsValue, Json}
-import play.api.mvc._
+import play.api.mvc.{Action, _}
 
 import scala.concurrent.Future
 import mongo.InvestmentTaxReliefSubmissionRepository
-import play.api.Logger
+import play.api.{Logger, http}
 import utils.SchemaHelper
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object SubmissionStubController extends SubmissionStubController{
   val investmentTaxReliefSubmissionRepository = InvestmentTaxReliefSubmissionRepository()
 }
 
 trait SubmissionStubController extends BaseController {
+
+  val response = (message: String) => s"""{"reason" : "$message"}"""
 
   val investmentTaxReliefSubmissionRepository : InvestmentTaxReliefSubmissionRepository
 
@@ -47,9 +53,6 @@ trait SubmissionStubController extends BaseController {
         reason = "Request to submit application failed with validation errors:" + validationReport.toString))))
     }
     else {
-      //val headers = request.headers.toSimpleMap
-      //val submissionApplicationBodyJs = ControllerHelper.addExtraRequestHeaderChecks(headers, submissiovanApplicationBodyJs)
-
       val emailFromJson = Json.parse(jsonBody).as[EmailModel]
       val emailLower = emailFromJson.emailAddress.getOrElse("").toLowerCase()
 
@@ -82,6 +85,66 @@ trait SubmissionStubController extends BaseController {
         }
       }
     }
+  }
+
+  def getReturnsSummary(tavcReferenceId: String, arn: Option[String]): Action[AnyContent] = Action.async { implicit request =>
+    if (tavcIdValidationCheck(tavcReferenceId))
+      getSubmissionHistorySummaryResponse(tavcReferenceId)
+    else Future.successful(BadRequest(response(Constants.oneOrMoreErrors)))
+  }
+
+  //noinspection ScalaStyle
+  private def getSubmissionHistorySummaryResponse(tavcReferenceId: String): Future[Result] = {
+    tavcReferenceId match {
+      case TavcReferenceConstants.notFoundRef => {
+        Future.successful(NotFound)
+      }
+      case TavcReferenceConstants.badRequestRefOneOrMoreErrors => {
+        Future.successful(BadRequest(response(Constants.oneOrMoreErrors)))
+      }
+      case TavcReferenceConstants.badRequestRefInvalidJsonMessage => {
+        Future.successful(BadRequest(response(Constants.invalidMessageReceived)))
+      }
+      case TavcReferenceConstants.badRequesDuplicateSubmissionRef => {
+        Future.successful(BadRequest(response(Constants.err004)))
+      }
+      case TavcReferenceConstants.resourceNotFoundRef => {
+        Future.successful(NotFound(response(Constants.resourceNotFound)))
+      }
+      case TavcReferenceConstants.serverErrorRef => {
+        Future.successful(InternalServerError(response(Constants.serverError)))
+      }
+      case TavcReferenceConstants.serverErrorRegimeRef => {
+        Future.successful(InternalServerError(response(Constants.err001)))
+      }
+      case TavcReferenceConstants.serverErrorSAPmissingRef => {
+        Future.successful(InternalServerError(response(Constants.err002)))
+      }
+      case TavcReferenceConstants.serviceUnavailableNotRespondingRef => {
+        Future.successful(ServiceUnavailable(response(Constants.serviceUnavailable)))
+      }
+      case TavcReferenceConstants.serviceUnavailable003Ref => {
+        Future.successful(ServiceUnavailable(response(Constants.err003)))
+      }
+      case TavcReferenceConstants.serviceUnavailable999Ref => {
+        Future.successful(ServiceUnavailable(response(Constants.err999)))
+      }
+      case _ => getMatchingJsonSubmissions(tavcReferenceId)
+    }
+  }
+
+  //noinspection ScalaStyle
+  private def getMatchingJsonSubmissions(tavcReferenceId: String): Future[Result] = {
+
+    val json = tavcReferenceId match {
+      case TavcReferenceConstants.historyAAEisVctAllRef =>  JsonResponseGetSubmissionHistory.submissionEisVcTResponses
+      case TavcReferenceConstants.historyAAWithCombinedNoSitr =>  JsonResponseGetSubmissionHistory.submissionsFullCombinedResponsesNoSitr
+      case TavcReferenceConstants.historyAASingleSchemesNoSitr =>  JsonResponseGetSubmissionHistory.submissionsSingleSchemesResponsesNoSitr
+      // default The JSON to return in all cases unless a specific TAVCRef is passed to match
+      case _ => JsonResponseGetSubmissionHistory.submissionsFullCombinedResponsesNoSitr
+    }
+
+    Future(Status(http.Status.OK)(json))
   }
 
   def generateFormBundleId(): String = {
