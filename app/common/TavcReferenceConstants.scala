@@ -38,6 +38,6 @@ object TavcReferenceConstants {
   // submission history mappings
   val historyAAEisVctAllRef = "XITAVC000904056"
   val historyAASingleSchemesNoSitr = "XVTAVC000945313"
-  val historyAAWithCombinedNoSitr = "XYTAVC000796389"
+  val historyAAWithCombinedNoSitr = "XATAVC000123456"
 
 }
