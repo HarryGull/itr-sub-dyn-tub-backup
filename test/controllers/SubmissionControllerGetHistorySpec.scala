@@ -191,4 +191,13 @@ class SubmissionControllerGetHistorySpec extends UnitSpec with OneAppPerSuite wi
       status(result) shouldBe OK
     }
   }
+  "When the valid tavc reference XVTAVC000349574 is passed the stub" should {
+    "return the expected OK request with no previous submission history records JSON Result" in new Setup {
+      val result = TestController.getReturnsSummary(TavcReferenceConstants.noPreviousSubmissionsRef, None).apply(FakeRequest())
+      val json = Json.parse(contentAsString(result))
+      json.toString() shouldBe JsonResponseGetSubmissionHistory.noPreviousSubmissionsResponse.toString()
+
+      status(result) shouldBe OK
+    }
+  }
 }

@@ -20,6 +20,16 @@ import play.api.libs.json.Json
 
 object JsonResponseGetSubmissionHistory {
 
+  // XVTAVC000349574
+  val noPreviousSubmissionsResponse = Json.parse(
+    """{
+      |	"processingDate": "2015-09-22T10:30:06.000Z",
+      |	"countReturned": "0",
+      |	"countTotal": "0",
+      |	"submissions": []
+      |}""".stripMargin
+  )
+
   // XITAVC000904056
   val submissionEisVcTResponses = Json.parse(
     """
