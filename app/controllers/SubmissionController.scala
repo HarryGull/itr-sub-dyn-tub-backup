@@ -96,39 +96,28 @@ trait SubmissionStubController extends BaseController {
   //noinspection ScalaStyle
   private def getSubmissionHistorySummaryResponse(tavcReferenceId: String): Future[Result] = {
     tavcReferenceId match {
-      case TavcReferenceConstants.notFoundRef => {
+      case TavcReferenceConstants.notFoundRef =>
         Future.successful(NotFound)
-      }
-      case TavcReferenceConstants.badRequestRefOneOrMoreErrors => {
+      case TavcReferenceConstants.badRequestRefOneOrMoreErrors =>
         Future.successful(BadRequest(response(Constants.oneOrMoreErrors)))
-      }
-      case TavcReferenceConstants.badRequestRefInvalidJsonMessage => {
+      case TavcReferenceConstants.badRequestRefInvalidJsonMessage =>
         Future.successful(BadRequest(response(Constants.invalidMessageReceived)))
-      }
-      case TavcReferenceConstants.badRequesDuplicateSubmissionRef => {
+      case TavcReferenceConstants.badRequesDuplicateSubmissionRef =>
         Future.successful(BadRequest(response(Constants.err004)))
-      }
-      case TavcReferenceConstants.resourceNotFoundRef => {
+      case TavcReferenceConstants.resourceNotFoundRef =>
         Future.successful(NotFound(response(Constants.resourceNotFound)))
-      }
-      case TavcReferenceConstants.serverErrorRef => {
+      case TavcReferenceConstants.serverErrorRef =>
         Future.successful(InternalServerError(response(Constants.serverError)))
-      }
-      case TavcReferenceConstants.serverErrorRegimeRef => {
+      case TavcReferenceConstants.serverErrorRegimeRef =>
         Future.successful(InternalServerError(response(Constants.err001)))
-      }
-      case TavcReferenceConstants.serverErrorSAPmissingRef => {
+      case TavcReferenceConstants.serverErrorSAPmissingRef =>
         Future.successful(InternalServerError(response(Constants.err002)))
-      }
-      case TavcReferenceConstants.serviceUnavailableNotRespondingRef => {
+      case TavcReferenceConstants.serviceUnavailableNotRespondingRef =>
         Future.successful(ServiceUnavailable(response(Constants.serviceUnavailable)))
-      }
-      case TavcReferenceConstants.serviceUnavailable003Ref => {
+      case TavcReferenceConstants.serviceUnavailable003Ref =>
         Future.successful(ServiceUnavailable(response(Constants.err003)))
-      }
-      case TavcReferenceConstants.serviceUnavailable999Ref => {
+      case TavcReferenceConstants.serviceUnavailable999Ref =>
         Future.successful(ServiceUnavailable(response(Constants.err999)))
-      }
       case _ => getMatchingJsonSubmissions(tavcReferenceId)
     }
   }
@@ -137,9 +126,10 @@ trait SubmissionStubController extends BaseController {
   private def getMatchingJsonSubmissions(tavcReferenceId: String): Future[Result] = {
 
     val json = tavcReferenceId match {
-      case TavcReferenceConstants.historyAAEisVctAllRef =>  JsonResponseGetSubmissionHistory.submissionEisVcTResponses
-      case TavcReferenceConstants.historyAAWithCombinedNoSitr =>  JsonResponseGetSubmissionHistory.submissionsFullCombinedResponsesNoSitr
-      case TavcReferenceConstants.historyAASingleSchemesNoSitr =>  JsonResponseGetSubmissionHistory.submissionsSingleSchemesResponsesNoSitr
+      case TavcReferenceConstants.noPreviousSubmissionsRef => JsonResponseGetSubmissionHistory.noPreviousSubmissionsResponse
+      case TavcReferenceConstants.historyAAEisVctAllRef => JsonResponseGetSubmissionHistory.submissionEisVcTResponses
+      case TavcReferenceConstants.historyAAWithCombinedNoSitr => JsonResponseGetSubmissionHistory.submissionsFullCombinedResponsesNoSitr
+      case TavcReferenceConstants.historyAASingleSchemesNoSitr => JsonResponseGetSubmissionHistory.submissionsSingleSchemesResponsesNoSitr
       // default The JSON to return in all cases unless a specific TAVCRef is passed to match
       case _ => JsonResponseGetSubmissionHistory.submissionsFullCombinedResponsesNoSitr
     }

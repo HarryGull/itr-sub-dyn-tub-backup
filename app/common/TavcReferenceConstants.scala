@@ -33,8 +33,8 @@ object TavcReferenceConstants {
   val serviceUnavailable999Ref = "XYTAVC000960695"
   val invalidRef1 = "XYTA000960695"
   val invalidRef2 = "XYTAVD000960695"
-
-
+  val noPreviousSubmissionsRef = "XVTAVC000349574"
+  
   // submission history mappings
   val historyAAEisVctAllRef = "XITAVC000904056"
   val historyAASingleSchemesNoSitr = "XVTAVC000945313"
