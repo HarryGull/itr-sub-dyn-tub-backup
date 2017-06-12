@@ -25,21 +25,18 @@ import play.api.libs.json.{JsError, JsResult, JsValue, Json}
 import play.api.mvc.{Action, _}
 
 import scala.concurrent.Future
-import mongo.InvestmentTaxReliefSubmissionRepository
 import play.api.{Logger, http}
 import utils.SchemaHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 object SubmissionStubController extends SubmissionStubController{
-  val investmentTaxReliefSubmissionRepository = InvestmentTaxReliefSubmissionRepository()
+
 }
 
 trait SubmissionStubController extends BaseController {
 
   val response = (message: String) => s"""{"reason" : "$message"}"""
-
-  val investmentTaxReliefSubmissionRepository : InvestmentTaxReliefSubmissionRepository
 
   //noinspection ScalaStyle
   def submitAdvancedAssuranceApplication(tavcReferenceId: String) = Action.async (BodyParsers.parse.json) { implicit request =>

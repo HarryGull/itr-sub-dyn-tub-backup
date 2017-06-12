@@ -12,5 +12,5 @@
 ->         /                          prod.Routes
 
 # stub-only housekeeping ops
-POST   /test-only/aa-submission/insert               controllers.testControllers.TestSetupController.insertSubmissionRecord
-DELETE /test-only/aa-submissions/remove              controllers.testControllers.TestSetupController.wipeDataBase
+#POST   /test-only/aa-submission/insert               controllers.testControllers.TestSetupController.insertSubmissionRecord
+#DELETE /test-only/aa-submissions/remove              controllers.testControllers.TestSetupController.wipeDataBase
