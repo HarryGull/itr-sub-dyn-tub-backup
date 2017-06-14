@@ -18,7 +18,6 @@ package controllers
 
 import fixtures.SubmissionFixture
 import models.submission.ErrorResponse
-import mongo.InvestmentTaxReliefSubmissionRepository
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.test.UnitSpec
@@ -32,7 +31,7 @@ import play.api.libs.json.Json
 
 class SubmissionControllerGetHistorySpec extends UnitSpec with OneAppPerSuite with MockitoSugar with SubmissionFixture {
 
-  val mockRepository: InvestmentTaxReliefSubmissionRepository = mock[InvestmentTaxReliefSubmissionRepository]
+  //val mockRepository: InvestmentTaxReliefSubmissionRepository = mock[InvestmentTaxReliefSubmissionRepository]
 
   val tavcReferenceId:String = "AA1234567890000"
 
@@ -42,7 +41,7 @@ class SubmissionControllerGetHistorySpec extends UnitSpec with OneAppPerSuite wi
   private class Setup {
 
     object TestController extends SubmissionStubController {
-      val investmentTaxReliefSubmissionRepository: InvestmentTaxReliefSubmissionRepository = mockRepository
+      //val investmentTaxReliefSubmissionRepository: InvestmentTaxReliefSubmissionRepository = mockRepository
     }
 
   }
