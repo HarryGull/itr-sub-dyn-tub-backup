@@ -51,8 +51,8 @@ class EmailVerificationControllerSpec extends UnitSpec with OneAppPerSuite with 
   }
 
   "The email stub POST request" should {
-    "return a not Found status with expected json error response for email containing notfound" in new Setup {
-      val result = TestController.verificationRequest().apply(FakeRequest().withBody(EmailJsonResponses.getPostJson("testnotfoundtest@test.com")))
+    "return a not Found status with expected json error response for email containing emailnotfound" in new Setup {
+      val result = TestController.verificationRequest().apply(FakeRequest().withBody(EmailJsonResponses.getPostJson("testemailnotfoundtest@test.com")))
       val emailResponse: VerificationErrorResponseModel = jsonBodyOf(result).as[VerificationErrorResponseModel]
       emailResponse.code shouldBe EmailConstants.codeNotFound
       emailResponse.message shouldBe EmailConstants.messageNotFound
@@ -64,8 +64,8 @@ class EmailVerificationControllerSpec extends UnitSpec with OneAppPerSuite with 
   }
 
   "The email stub POST request" should {
-    "return a bad request status with expected validation error json error response for email containing badrequest" in new Setup {
-      val result = TestController.verificationRequest().apply(FakeRequest().withBody(EmailJsonResponses.getPostJson("testbadrequesttest@test.com")))
+    "return a bad request status with expected validation error json error response for email containing badrequestvalidation" in new Setup {
+      val result = TestController.verificationRequest().apply(FakeRequest().withBody(EmailJsonResponses.getPostJson("testbadrequestvalidationtest@test.com")))
       val emailResponse: VerificationErrorResponseModel = jsonBodyOf(result).as[VerificationErrorResponseModel]
       emailResponse.code shouldBe EmailConstants.codeValidationError
       emailResponse.message shouldBe EmailConstants.messageValidationError
@@ -101,8 +101,8 @@ class EmailVerificationControllerSpec extends UnitSpec with OneAppPerSuite with 
   }
 
   "The email stub POST request" should {
-    "return an internal server error status with expected unexpected error json error response for email containing internalservererrorrequest" in new Setup {
-      val result = TestController.verificationRequest().apply(FakeRequest().withBody(EmailJsonResponses.getPostJson("testinternalservererrorrequesttest@test.com")))
+    "return an internal server error status with expected unexpected error json error response for email containing emailinternalservererrorrequest" in new Setup {
+      val result = TestController.verificationRequest().apply(FakeRequest().withBody(EmailJsonResponses.getPostJson("testemailinternalservererrorrequesttest@test.com")))
       val emailResponse: VerificationErrorResponseModel = jsonBodyOf(result).as[VerificationErrorResponseModel]
       emailResponse.code shouldBe EmailConstants.codeUnexpectedError
       emailResponse.message shouldBe EmailConstants.messageUnexpectedError
@@ -254,8 +254,8 @@ class EmailVerificationControllerSpec extends UnitSpec with OneAppPerSuite with 
 
 
   "The email stub GET request" should {
-    "return an internal server error status with expected unexpected error json error response for email containing internalservererrorrequest" in new Setup {
-      val result = TestController.verifyEmailAddress("testinternalservererrorrequesttest@test.com").apply(FakeRequest())
+    "return an internal server error status with expected unexpected error json error response for email containing emailinternalservererrorrequest" in new Setup {
+      val result = TestController.verifyEmailAddress("testemailinternalservererrorrequesttest@test.com").apply(FakeRequest())
       val emailResponse: VerificationErrorResponseModel = jsonBodyOf(result).as[VerificationErrorResponseModel]
       emailResponse.code shouldBe EmailConstants.codeUnexpectedError
       emailResponse.message shouldBe EmailConstants.messageUnexpectedError
@@ -290,8 +290,8 @@ class EmailVerificationControllerSpec extends UnitSpec with OneAppPerSuite with 
   }
 
   "The email stub GET request" should {
-    "return a not Found status with expected json error response for email containing notfound" in new Setup {
-      val result = TestController.verifyEmailAddress("testnotfoundtest@test.com").apply(FakeRequest())
+    "return a not Found status with expected json error response for email containing emailnotfound" in new Setup {
+      val result = TestController.verifyEmailAddress("testemailnotfoundtest@test.com").apply(FakeRequest())
       val emailResponse: VerificationErrorResponseModel = jsonBodyOf(result).as[VerificationErrorResponseModel]
       emailResponse.code shouldBe EmailConstants.codeNotFound
       emailResponse.message shouldBe EmailConstants.messageNotFound
