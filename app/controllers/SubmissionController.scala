@@ -39,7 +39,7 @@ trait SubmissionStubController extends BaseController {
   val response = (message: String) => s"""{"reason" : "$message"}"""
 
   //noinspection ScalaStyle
-  def submitAdvancedAssuranceApplication(tavcReferenceId: String) = Action.async (BodyParsers.parse.json) { implicit request =>
+  def submitApplication(tavcReferenceId: String) = Action.async (BodyParsers.parse.json) { implicit request =>
 
     val jsonBody = request.body.toString()
 
