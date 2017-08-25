@@ -1,6 +1,6 @@
 # microservice specific routes
 
-POST    /taxpayers/:tavcReferenceId/returns      controllers.SubmissionStubController.submitAdvancedAssuranceApplication(tavcReferenceId: String)
+POST    /taxpayers/:tavcReferenceId/returns      controllers.SubmissionStubController.submitApplication(tavcReferenceId: String)
 
 GET     /taxpayers/:tavcReferenceId/returns/summary controllers.SubmissionStubController.getReturnsSummary(tavcReferenceId: String, arn: Option[String]?=None)
 

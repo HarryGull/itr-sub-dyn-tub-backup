@@ -46,7 +46,7 @@ class SubmissionControllerSpec extends UnitSpec with OneAppPerSuite with Mockito
 
   "The stub should return a  " should {
     "return a valid json response with a bundle id and expected message detailing the status" in new Setup {
-      val result = TestController.submitAdvancedAssuranceApplication(tavcReferenceId).apply(FakeRequest().withBody(validJs))
+      val result = TestController.submitApplication(tavcReferenceId).apply(FakeRequest().withBody(validJs))
       val submissionResponse: SubmissionResponse = jsonBodyOf(result).as[SubmissionResponse]
       submissionResponse.formBundleNumber.startsWith("FBUND") shouldEqual true
       submissionResponse.processingDate shouldEqual "2014-12-17T09:30:47Z"
@@ -57,35 +57,35 @@ class SubmissionControllerSpec extends UnitSpec with OneAppPerSuite with Mockito
 
   "The stub should return an internal server error if the email contains the text internalservererror " should {
     "return a json package detailing the status" in new Setup {
-      val result = TestController.submitAdvancedAssuranceApplication(tavcReferenceId).apply(FakeRequest().withBody(InternalServerErrJs))
+      val result = TestController.submitApplication(tavcReferenceId).apply(FakeRequest().withBody(InternalServerErrJs))
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
   }
 
   "The stub should return an bad request server error if the schema validation of the JSON fails " should {
     "return a json package detailing the status" in new Setup {
-      val result = TestController.submitAdvancedAssuranceApplication(tavcReferenceId).apply(FakeRequest().withBody(invalidSchemaJs))
+      val result = TestController.submitApplication(tavcReferenceId).apply(FakeRequest().withBody(invalidSchemaJs))
       status(result) shouldBe BAD_REQUEST
     }
   }
 
   "The stub should return a service unavailable error if the email contains the text serviceunavailable " should {
     "return a json package detailing the status" in new Setup {
-      val result = TestController.submitAdvancedAssuranceApplication(tavcReferenceId).apply(FakeRequest().withBody(unavailableJs))
+      val result = TestController.submitApplication(tavcReferenceId).apply(FakeRequest().withBody(unavailableJs))
       status(result) shouldBe SERVICE_UNAVAILABLE
     }
   }
 
   "The stub should return a service unavailable error if the email contains the text forbidden " should {
     "return a json package detailing the status" in new Setup {
-      val result = TestController.submitAdvancedAssuranceApplication(tavcReferenceId).apply(FakeRequest().withBody(forbiddenJS))
+      val result = TestController.submitApplication(tavcReferenceId).apply(FakeRequest().withBody(forbiddenJS))
       status(result) shouldBe FORBIDDEN
     }
   }
 
   "The stub should return a bad request if the email contains the text badrequest " should {
     "return a json package detailing the status" in new Setup {
-      val resultd = TestController.submitAdvancedAssuranceApplication(tavcReferenceId).apply(FakeRequest().withBody(badRequestJs))
+      val resultd = TestController.submitApplication(tavcReferenceId).apply(FakeRequest().withBody(badRequestJs))
       status(resultd) shouldBe BAD_REQUEST
     }
   }
