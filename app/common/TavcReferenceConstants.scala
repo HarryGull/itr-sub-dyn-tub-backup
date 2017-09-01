@@ -41,3 +41,21 @@ object TavcReferenceConstants {
   val historyAAWithCombinedNoSitr = "XYTAVC000796389"
 
 }
+
+object SubmissionEmailConstants {
+
+  //errors
+  val notFoundEmail = "notfoundgeneral"
+  val badRequestEmailOneOrMoreErrors  = "badrequestoneormore"
+  val badRequestEmailInvalidJsonMessage = "badrequestinvalidjson"
+  val badRequesDuplicateSubmissionEmail = "badrequestduplicate"
+  val resourceNotFoundEmail = "resourcenotfound"
+  val serverErrorEmail = "internalservererrorrequest"
+  val serverErrorRegimeEmail = "internalservererror001"
+  val serverErrorSAPmissingEmail = "internalservererror002"
+  val serviceUnavailable003Email = "serviceunavailable003"
+  val serviceUnavailable999Email = "serviceunavailabl999"
+  val serviceUnavailableNotRespondingEmail = "serviceunavailablenotresponding"
+  val forbidden = "forbiddenrequest"
+
+}

@@ -66,7 +66,7 @@ class SubmissionControllerGetHistorySpec extends UnitSpec with OneAppPerSuite wi
     "return the expected bad request and error message response" in new Setup {
       val result = TestController.getReturnsSummary(TavcReferenceConstants.badRequestRefInvalidJsonMessage, None).apply(FakeRequest())
       val errorResponse: ErrorResponse = jsonBodyOf(result).as[ErrorResponse]
-      errorResponse.reason shouldBe Constants.invalidMessageReceived
+      errorResponse.reason shouldBe Constants.invalidJsonMessageReceived
       status(result) shouldBe BAD_REQUEST
     }
   }

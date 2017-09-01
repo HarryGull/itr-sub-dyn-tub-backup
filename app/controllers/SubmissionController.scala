@@ -16,7 +16,7 @@
 
 package controllers
 
-import common.{Constants, JsonResponseGetSubmissionHistory, TavcReferenceConstants}
+import common.{Constants, JsonResponseGetSubmissionHistory, SubmissionEmailConstants, TavcReferenceConstants}
 import common.Validation._
 import uk.gov.hmrc.play.microservice.controller.BaseController
 import models._
@@ -38,6 +38,54 @@ trait SubmissionStubController extends BaseController {
 
   val response = (message: String) => s"""{"reason" : "$message"}"""
 
+  lazy val random = new scala.util.Random
+
+  //noinspection ScalaStyle
+//  def submitApplication(tavcReferenceId: String) = Action.async (BodyParsers.parse.json) { implicit request =>
+//
+//    val jsonBody = request.body.toString()
+//
+//    val validationReport = SchemaHelper.getJsonValidationReport(jsonBody)
+//
+//    if (validationReport.fold(true)(_.isSuccess == false)) {
+//      Future.successful(BadRequest(Json.toJson(Error(
+//        reason = "Request to submit application failed with validation errors:" + validationReport.toString))))
+//    }
+//    else {
+//      val emailFromJson = Json.parse(jsonBody).as[EmailModel]
+//      val emailLower = emailFromJson.emailAddress.getOrElse("").toLowerCase()
+//
+//      Logger.info(s"JsonSubmitted for submitAdvancedAssuranceApplication is: $jsonBody")
+//
+//      // return faked expected responses for testing based on the email value passed.
+//      emailLower match {
+//        case email if email.contains("badrequest") => {
+//          Future.successful(BadRequest(Json.toJson(Error(
+//            reason = "Request to submit application failed with validation errors"))))
+//        }
+//        case email if email.contains("forbiddenrequest") => {
+//          Future.successful(Forbidden(Json.toJson(Error(reason = "Forbidden"))))
+//        }
+//        case email if email.contains("notfound") => {
+//          Future.successful(NotFound(Json.toJson(Error(reason = "Not Found"))))
+//        }
+//        case email if email.contains("internalservererrorrequest") => {
+//          Future.successful(InternalServerError(Json.toJson(Error(reason = "Internal Server Error"))))
+//        }
+//        case email if email.contains("serviceunavailablerequest") => {
+//          Future.successful(ServiceUnavailable(Json.toJson(Error(reason = "Service Unavailable"))))
+//        }
+//        case email if email.contains("getsubmittedjson") => {
+//          Logger.info(s"[SubscriptionStubController][getsubmittedJson] is: $jsonBody")
+//          Future.successful(BadRequest(Json.toJson(Error(reason = jsonBody))))
+//        }
+//        case _ => {
+//          Future.successful(Ok(Json.toJson(SubmissionResponse("2014-12-17T09:30:47Z", generateFormBundleId()))))
+//        }
+//      }
+//    }
+//  }
+
   //noinspection ScalaStyle
   def submitApplication(tavcReferenceId: String) = Action.async (BodyParsers.parse.json) { implicit request =>
 
@@ -57,29 +105,35 @@ trait SubmissionStubController extends BaseController {
 
       // return faked expected responses for testing based on the email value passed.
       emailLower match {
-        case email if email.contains("badrequest") => {
-          Future.successful(BadRequest(Json.toJson(Error(
-            reason = "Request to submit application failed with validation errors"))))
-        }
-        case email if email.contains("forbiddenrequest") => {
-          Future.successful(Forbidden(Json.toJson(Error(reason = "Forbidden"))))
-        }
-        case email if email.contains("notfound") => {
-          Future.successful(NotFound(Json.toJson(Error(reason = "Not Found"))))
-        }
-        case email if email.contains("internalservererrorrequest") => {
-          Future.successful(InternalServerError(Json.toJson(Error(reason = "Internal Server Error"))))
-        }
-        case email if email.contains("serviceunavailablerequest") => {
-          Future.successful(ServiceUnavailable(Json.toJson(Error(reason = "Service Unavailable"))))
-        }
-        case email if email.contains("getsubmittedjson") => {
+        case email if email.contains(SubmissionEmailConstants.notFoundEmail) =>
+          Future.successful(NotFound)
+        case email if email.contains(SubmissionEmailConstants.badRequestEmailOneOrMoreErrors) =>
+          Future.successful(BadRequest(response(Constants.oneOrMoreErrors)))
+        case email if email.contains(SubmissionEmailConstants.badRequestEmailInvalidJsonMessage) =>
+          Future.successful(BadRequest(response(Constants.invalidJsonMessageReceived)))
+        case email if email.contains(SubmissionEmailConstants.badRequesDuplicateSubmissionEmail) =>
+          Future.successful(BadRequest(response(Constants.err004)))
+        case email if email.contains(SubmissionEmailConstants.resourceNotFoundEmail) =>
+          Future.successful(NotFound(response(Constants.resourceNotFound)))
+        case email if email.contains(SubmissionEmailConstants.serverErrorEmail) =>
+          Future.successful(InternalServerError(response(Constants.serverError)))
+        case email if email.contains(SubmissionEmailConstants.serverErrorRegimeEmail) =>
+          Future.successful(InternalServerError(response(Constants.err001)))
+        case email if email.contains(SubmissionEmailConstants.serverErrorSAPmissingEmail) =>
+          Future.successful(InternalServerError(response(Constants.err002)))
+        case email if email.contains(SubmissionEmailConstants.serviceUnavailableNotRespondingEmail) =>
+          Future.successful(ServiceUnavailable(response(Constants.serviceUnavailable)))
+        case email if email.contains(SubmissionEmailConstants.serviceUnavailable003Email) =>
+          Future.successful(ServiceUnavailable(response(Constants.err003)))
+        case email if email.contains(SubmissionEmailConstants.serviceUnavailable999Email) =>
+          Future.successful(ServiceUnavailable(response(Constants.err999)))
+        case email if email.contains(SubmissionEmailConstants.forbidden) =>
+          Future.successful(Forbidden(response(Constants.forbidden)))
+        case email if email.contains("getsubmittedjson") =>
           Logger.info(s"[SubscriptionStubController][getsubmittedJson] is: $jsonBody")
           Future.successful(BadRequest(Json.toJson(Error(reason = jsonBody))))
-        }
-        case _ => {
+        case _ =>
           Future.successful(Ok(Json.toJson(SubmissionResponse("2014-12-17T09:30:47Z", generateFormBundleId()))))
-        }
       }
     }
   }
@@ -98,7 +152,7 @@ trait SubmissionStubController extends BaseController {
       case TavcReferenceConstants.badRequestRefOneOrMoreErrors =>
         Future.successful(BadRequest(response(Constants.oneOrMoreErrors)))
       case TavcReferenceConstants.badRequestRefInvalidJsonMessage =>
-        Future.successful(BadRequest(response(Constants.invalidMessageReceived)))
+        Future.successful(BadRequest(response(Constants.invalidJsonMessageReceived)))
       case TavcReferenceConstants.badRequesDuplicateSubmissionRef =>
         Future.successful(BadRequest(response(Constants.err004)))
       case TavcReferenceConstants.resourceNotFoundRef =>
@@ -135,10 +189,17 @@ trait SubmissionStubController extends BaseController {
   }
 
   def generateFormBundleId(): String = {
-    val start = 10000000
-    val end =   99999999
-    // prepend a string value
-    s"FBUND${start + scala.util.Random.nextInt( (end - start) + 1 )}"
+
+    def randomString(alphabet: String)(n: Int): String =
+      Stream.continually(random.nextInt(alphabet.length)).map(alphabet).take(n).mkString
+
+    def randomAlphanumericString(n: Int): String =
+      randomString("abcdefghijklmnopqrstuvwxyz0123456789")(n)
+
+    def randomNumberString(n: Int): String =
+      randomString("1234567890")(n)
+
+    randomNumberString(12)
   }
 
 }
