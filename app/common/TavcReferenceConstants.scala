@@ -54,7 +54,7 @@ object SubmissionEmailConstants {
   val serverErrorRegimeEmail = "internalservererror001"
   val serverErrorSAPmissingEmail = "internalservererror002"
   val serviceUnavailable003Email = "serviceunavailable003"
-  val serviceUnavailable999Email = "serviceunavailabl999"
+  val serviceUnavailable999Email = "serviceunavailable999"
   val serviceUnavailableNotRespondingEmail = "serviceunavailablenotresponding"
   val forbidden = "forbiddenrequest"
 

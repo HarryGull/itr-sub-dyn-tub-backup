@@ -41,52 +41,6 @@ trait SubmissionStubController extends BaseController {
   lazy val random = new scala.util.Random
 
   //noinspection ScalaStyle
-//  def submitApplication(tavcReferenceId: String) = Action.async (BodyParsers.parse.json) { implicit request =>
-//
-//    val jsonBody = request.body.toString()
-//
-//    val validationReport = SchemaHelper.getJsonValidationReport(jsonBody)
-//
-//    if (validationReport.fold(true)(_.isSuccess == false)) {
-//      Future.successful(BadRequest(Json.toJson(Error(
-//        reason = "Request to submit application failed with validation errors:" + validationReport.toString))))
-//    }
-//    else {
-//      val emailFromJson = Json.parse(jsonBody).as[EmailModel]
-//      val emailLower = emailFromJson.emailAddress.getOrElse("").toLowerCase()
-//
-//      Logger.info(s"JsonSubmitted for submitAdvancedAssuranceApplication is: $jsonBody")
-//
-//      // return faked expected responses for testing based on the email value passed.
-//      emailLower match {
-//        case email if email.contains("badrequest") => {
-//          Future.successful(BadRequest(Json.toJson(Error(
-//            reason = "Request to submit application failed with validation errors"))))
-//        }
-//        case email if email.contains("forbiddenrequest") => {
-//          Future.successful(Forbidden(Json.toJson(Error(reason = "Forbidden"))))
-//        }
-//        case email if email.contains("notfound") => {
-//          Future.successful(NotFound(Json.toJson(Error(reason = "Not Found"))))
-//        }
-//        case email if email.contains("internalservererrorrequest") => {
-//          Future.successful(InternalServerError(Json.toJson(Error(reason = "Internal Server Error"))))
-//        }
-//        case email if email.contains("serviceunavailablerequest") => {
-//          Future.successful(ServiceUnavailable(Json.toJson(Error(reason = "Service Unavailable"))))
-//        }
-//        case email if email.contains("getsubmittedjson") => {
-//          Logger.info(s"[SubscriptionStubController][getsubmittedJson] is: $jsonBody")
-//          Future.successful(BadRequest(Json.toJson(Error(reason = jsonBody))))
-//        }
-//        case _ => {
-//          Future.successful(Ok(Json.toJson(SubmissionResponse("2014-12-17T09:30:47Z", generateFormBundleId()))))
-//        }
-//      }
-//    }
-//  }
-
-  //noinspection ScalaStyle
   def submitApplication(tavcReferenceId: String) = Action.async (BodyParsers.parse.json) { implicit request =>
 
     val jsonBody = request.body.toString()
