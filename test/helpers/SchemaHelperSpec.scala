@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package utils
+package helpers
 
-import com.github.fge.jsonschema.core.report.ProcessingReport
 import fixtures.SubmissionFixture
+import play.api.libs.json.{JsError, Json}
 import uk.gov.hmrc.play.test.UnitSpec
-import play.api.libs.json.{JsSuccess, _}
 import models.submission.SubmissionResponse
 import org.scalatestplus.play.OneAppPerSuite
+import utils.SchemaHelper
 
 object SchemaHelperSpec {
 
@@ -77,52 +77,4 @@ class SchemaHelperSpec extends UnitSpec with OneAppPerSuite with SubmissionFixtu
     }
   }
 
-
-//
-//  "The validation results for an invalid testReponse and valid headers" should {
-//    "return a failure with one error" in {
-//      val requestJs = ControllerHelper.addExtraRequestHeaderChecks(TestData.validHeadersExample, TestData.invalidRequestJsError)
-//      requestJs.isSuccess shouldBe false
-//      requestJs.asInstanceOf[JsError].errors.seq.size shouldBe 1
-//      requestJs.asInstanceOf[JsError].errors.seq.head._2.size shouldBe 1
-//    }
-//  }
-//
-//  "The validation results for a valid CreateProtectionRequest and missing Authorization and Environment headers" should {
-//    "return a failure with two validation errosr" in {
-//      val requestJs = ControllerHelper.addExtraRequestHeaderChecks(TestData.emptyHeadersExample, JsSuccess(TestData.validSubmissionResponse))
-//      requestJs.isSuccess shouldBe false
-//      println("RESULT ==> " + requestJs)
-//      requestJs.asInstanceOf[JsError].errors.seq.size shouldBe 1
-//      requestJs.asInstanceOf[JsError].errors.seq.head._2.size shouldBe 2
-//    }
-//  }
-//
-//  "The validation results for an invalid CreateProtectionRequest and missing Authorization and Environment headers" should {
-//    "return a failure with three validation errosr" in {
-//      val requestJs = ControllerHelper.addExtraRequestHeaderChecks(TestData.emptyHeadersExample,  TestData.invalidRequestJsError)
-//      requestJs.isSuccess shouldBe false
-//      println("RESULT ==> " + requestJs)
-//      requestJs.asInstanceOf[JsError].errors.seq.size shouldBe 1
-//      requestJs.asInstanceOf[JsError].errors.seq.head._2.size shouldBe 3
-//    }
-//  }
-//
-//  "The validation results for a valid CreateProtectionRequest and missing Environment header" should {
-//    "return a failure with one error" in {
-//      val requestJs = ControllerHelper.addExtraRequestHeaderChecks(TestData.noEnvHeadersExample, JsSuccess(TestData.validSubmissionResponse))
-//      requestJs.isSuccess shouldBe false
-//      requestJs.asInstanceOf[JsError].errors.seq.size shouldBe 1
-//      requestJs.asInstanceOf[JsError].errors.seq.head._2.size shouldBe 1
-//    }
-//  }
-//
-//  "The validation results for a valid CreateProtectionRequest and missing Authorization header" should {
-//    "return a failure with one error" in {
-//      val requestJs = ControllerHelper.addExtraRequestHeaderChecks(TestData.noAuthHeadersExample, JsSuccess(TestData.validSubmissionResponse))
-//      requestJs.isSuccess shouldBe false
-//      requestJs.asInstanceOf[JsError].errors.seq.size shouldBe 1
-//      requestJs.asInstanceOf[JsError].errors.seq.head._2.size shouldBe 1
-//    }
-  //}
 }
