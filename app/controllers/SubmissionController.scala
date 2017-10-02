@@ -55,7 +55,7 @@ trait SubmissionStubController extends BaseController {
       val emailFromJson = Json.parse(jsonBody).as[EmailModel]
       val emailLower = emailFromJson.emailAddress.getOrElse("").toLowerCase()
 
-      Logger.info(s"JsonSubmitted for submitAdvancedAssuranceApplication is: $jsonBody")
+      Logger.info(s"JsonSubmitted for submitApplication is: $jsonBody")
 
       // return faked expected responses for testing based on the email value passed.
       emailLower match {
